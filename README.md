@@ -42,6 +42,9 @@ Service configuration performed using the hosts file. The empty hosts file is su
 * **[hbasemaster]**: configures _hbase-master_ services. 1 host is allowed. _hbase-regionserver_ will be configured on on each **[datanodes]** host. at least 1 **[zookeepernodes]** host is requird
 * **[hue]**: configures _hue_ and _oozie_ services. 1 host is allowed. **[postgresql]** host is required for configuration data storage.
 
+#### Variables parameters.
+Please see [group/vars/all](group_vars/all)
+
 # Usage
 To start deployment run:
 
