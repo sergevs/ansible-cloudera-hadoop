@@ -31,8 +31,8 @@ After clinit package installed you’ll be able to stop, start and see status of
 Service configuration performed using the hosts file. The empty [hosts](hosts) file is supplied with playbook. **You must not remove any existing group**. Leave the group empty if you don't need services the group configures.
 
 #### Hosts file groups description:
-* **[namenodes]** : configures _namenode_ services, 1 or 2 hosts are allowed. HA HDFS will be configured in the case of 2 hosts.
-* **[datanodes]** : configures _datanode_ services, at least one host is required
+* **[namenodes]** : configures _namenode_ services, at least 1 host is required, 2 hosts are allowed. HA HDFS will be configured in the case of 2 hosts.
+* **[datanodes]** : configures _datanode_ services, at least 1 host is required
 * **[yarnresourcemanager]** : configures _mapreduce_ yarn resource manager, exactly 1 host is required. _node manager_ services will be configured on **[datanodes]** hosts.
 * **[zookeepernodes]** : confiugures _zookeeper_ services. 3 or 5 hosts is required for HA in the case 2 **[namenodes]** hosts configured
 * **[journalnodes]** : configures _journalnode_ services required for HA configuration, at least one host is required in the case 2 **[namenodes]** hosts configured
