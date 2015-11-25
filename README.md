@@ -33,7 +33,6 @@ Please visit [clinit manager home page](https://github.com/sergevs/clinit) and s
 The rpm package can be downloaded from [clinit-1.0-ssv1.el6.noarch.rpm](https://github.com/sergevs/clinit/releases/download/1.0/clinit-1.0-ssv1.el6.noarch.rpm).
 After clinit package installed you’ll be able to stop, start and see status of services of any service on any node.
 
-clinit -S workdir/services.xml status
 # Configuration
 
 # Usage
