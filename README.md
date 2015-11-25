@@ -52,6 +52,14 @@ if you have installed clinit you can also run:
     clinit -S workdir/services.xml status
     clinit -S workdir/services.xml tree
 
+#### Tags used in playbook:
+* **package** : install rpm packages
+* **config** : deploy configuration files, useful if you want just change configuration on hosts.
+* **test** : run test actions
+* **check** : check hosts configuration
+
+Also most hostgroups have the tag with similar name.
+
 # Requirements
 OS version: Redhat/CentOS 6
 Cloudera Hadoop version: 5.4
