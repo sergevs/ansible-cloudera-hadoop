@@ -14,7 +14,7 @@ The playbook is able to setup the required services for components:
 *	postgresql 
 
 The configuration is _very_ simple:
-It’s only required to place hostname(s) to the appropriate group in hosts file, and the services will setup on it.
+It’s only required to place hostname(s) to the appropriate group in hosts file, and the required services will be setup.
 
 The playbook run configuration check tasks at start, and will stop if the configuration is not supported,
 providing a descriptive error message. 
