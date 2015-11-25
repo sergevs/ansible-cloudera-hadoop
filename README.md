@@ -31,7 +31,7 @@ the required configuration file which can be found in roles/<product>/[files|tem
 Besides of cluster( or single host ) setup, the playbook also generates cluster manager configuration file located at workdir/services.xml.
 Please visit [clinit manager home page](https://github.com/sergevs/clinit) and see [manual](https://github.com/sergevs/clinit/wiki) .
 The rpm package can be downloaded from [clinit-1.0-ssv1.el6.noarch.rpm](https://github.com/sergevs/clinit/releases/download/1.0/clinit-1.0-ssv1.el6.noarch.rpm).
-After clinit package installed you’ll be able to stop, start and see status of services of any service on any node.
+After clinit package installed you’ll be able to stop, start and see status of services on any node.
 
 # Configuration
 
