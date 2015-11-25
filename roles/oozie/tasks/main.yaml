@@ -1,0 +1,85 @@
+- name: install packages
+  tags: packages
+  yum:  name={{ item }} state=latest
+  with_items:
+    - oozie
+    - unzip
+
+- name: create configuration directory
+  tags: config
+  file: path=/etc/oozie/conf.{{ cluster_name }} state=directory
+
+- name: setup alternatives link
+  tags: config
+  alternatives: name=oozie-conf link=/etc/oozie/conf path=/etc/oozie/conf.{{ cluster_name }}
+
+- name: setup alternatives link
+  tags: config
+  alternatives: name=oozie-tomcat-conf link=/etc/oozie/oozie-tomcat-conf path=/etc/oozie/tomcat-conf.http
+
+- name: install template configurations
+  tags: config
+  template: src="oozie-site.xml.j2" dest=/etc/oozie/conf/oozie-site.xml
+
+- name: install files configurations
+  tags: config
+  copy: src={{ item }} dest=/etc/oozie/conf/{{ item }}
+  with_items:
+    - hadoop-config.xml
+    - oozie-default.xml
+    - oozie-env.cmd
+    - oozie-env.sh
+    - oozie-log4j.properties
+
+- name: create config directories
+  tags: config
+  file: path=/etc/oozie/conf/{{ item }} state=directory
+  with_items:
+    - action-conf
+    - hadoop-conf
+
+- name: install files configurations
+  tags: config
+  copy: src={{ item }} dest=/etc/oozie/conf/actions-conf/{{ item|basename }}
+  with_fileglob:
+    - actions-conf/*
+
+- name: install files configurations
+  tags: config
+  copy: src={{ item }} dest=/etc/oozie/conf/hadoop-conf/{{ item|basename }}
+  with_fileglob:
+    - hadoop-conf/*
+
+- name: create hdfs directories
+  command: sudo -Hu hdfs hdfs dfs {{ item }}
+  with_items:
+    - -mkdir -p /user/oozie
+    - -chown oozie:oozie /user/oozie
+
+- name: install shared libraries to hdfs
+  command: oozie-setup sharelib create -fs {% if groups['namenodes']|count > 1 %} hdfs://{{ cluster_name }} {% else %} hdfs://{{ groups['namenodes'][0] }}:8020 {% endif %} -locallib /usr/lib/oozie/oozie-sharelib-yarn
+
+- name: generate sql
+  template: src="oozie.sql.j2" dest=/tmp/oozie.sql
+
+- name: install .pgpass
+  template: src=".pgpass.j2" dest=/root/.pgpass mode=0600
+
+- name: create database
+  command: psql -h {{ groups['postgresql'][0] }} --username postgres -f /tmp/oozie.sql
+
+- name: install files configurations
+  copy: src=ext-2.2.zip dest=/tmp/ext-2.2.zip
+
+- name: extract ext-2.2
+  command: unzip /tmp/ext-2.2.zip -d /var/lib/oozie/
+
+- name: remove sql and .pgpass ext-2.2.zip files
+  command: rm -f /tmp/oozie.sql /root/.pgpass /tmp/ext-2.2.zip
+
+- name: initialize database
+  command: service oozie init
+
+- name: start services 
+  tags: service
+  command: service oozie start

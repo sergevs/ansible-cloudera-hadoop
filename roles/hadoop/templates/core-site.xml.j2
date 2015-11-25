@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<configuration>
+
+  <property>
+    <name>fs.defaultFS</name>
+{% if groups['namenodes']|count > 1 %}
+    <value>hdfs://{{ cluster_name }}</value>
+{% else %}
+    <value>hdfs://{{ groups['namenodes'][0] }}:8020</value>
+{% endif %}
+  </property>
+
+  <property>
+    <name>dfs.permissions.superusergroup</name>
+    <value>hadoop</value>
+  </property>
+
+  <property>
+    <name>hadoop.proxyuser.mapred.groups</name>
+    <value>*</value>
+  </property>
+
+  <property>
+    <name>hadoop.proxyuser.mapred.hosts</name>
+    <value>*</value>
+  </property>
+
+  <property>
+    <name>hadoop.proxyuser.hue.hosts</name>
+    <value>*</value>
+  </property>
+
+  <property>
+    <name>hadoop.proxyuser.hue.groups</name>
+    <value>*</value>
+  </property>
+
+  <property>  
+    <name>hadoop.proxyuser.httpfs.hosts</name>  
+    <value>*</value>  
+  </property>  
+
+  <property>  
+    <name>hadoop.proxyuser.httpfs.groups</name>  
+    <value>*</value>  
+  </property>  
+
+  <property>
+    <name>hadoop.proxyuser.oozie.hosts</name>                                  
+    <value>*</value>
+  </property>
+
+  <property>
+    <name>hadoop.proxyuser.oozie.groups</name>
+    <value>*</value>
+  </property>
+
+  <property>
+    <name>hadoop.proxyuser.impala.hosts</name>     
+    <value>*</value>
+  </property>
+
+  <property>
+   <name>hadoop.proxyuser.impala.groups</name>
+   <value>*</value>
+  </property>
+
+</configuration>

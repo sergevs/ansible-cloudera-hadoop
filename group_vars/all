@@ -1,0 +1,36 @@
+# java package name 
+# for oracle distributed packages you should use java-<version> as name
+java_package: java-1.8.0
+java_home: /usr/java/jdk1.8.0_65/
+
+# cluster name will impact the name of alternatives links and hdfs URI in the case of HA
+cluster_name: cluster
+
+# the ssh key to access other hosts without password under the root account
+# you have to generate it and put public key to the target hosts /root/.ssh/authorized_keys
+root_ssh_key: /root/.ssh/hadoop.key
+
+# the variable to control data destruction. non destructive plays not tested yet
+destroy_data: True
+
+# hadoop directories
+#
+# name nodes directory
+dfs_namenode_name_dir: 'file:///var/lib/hadoop-hdfs/cache/hdfs/dfs/name'
+
+# datanodes directory
+dfs_datanode_data_dir: 'file:///var/lib/hadoop-hdfs/cache/hdfs/dfs/data'
+
+# journal nodes directory
+dfs_journalnode_edits_dir: '/var/lib/hadoop-hdfs/cache/hdfs/dfs/journal'
+
+# postgres database accounts passwords
+#
+# postgres administrative account password
+postgres_password: postgres
+# metastore database password
+hiveuser_password: mypassword
+# oozie database password
+oozie_password: theoozie
+# hue database password
+hue_password: thehue

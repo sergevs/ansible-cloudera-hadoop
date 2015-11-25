@@ -1,0 +1,39 @@
+- name: install packages
+  tags: packages
+  yum: name={{ item }} state=latest
+  with_items:
+    - hbase-regionserver
+
+- name: create configuration directory
+  file: path=/etc/hbase/conf.{{ cluster_name }} state=directory
+
+- name: setup alternatives link
+  alternatives: name=hbase-conf link=/etc/hbase/conf path=/etc/hbase/conf.{{ cluster_name }}
+
+- name: install template configurations
+  tags: config
+  template: src={{ item }}.j2 dest=/etc/hbase/conf/{{ item }}
+  with_items:
+    - hbase-site.xml
+    - regionservers
+
+- name: install files configurations
+  tags: config
+  copy: src={{ item }} dest=/etc/hbase/conf/{{ item }}
+  with_items:
+    - hadoop-metrics2-hbase.properties
+    - hbase-env.cmd
+    - hbase-env.sh  
+    - hbase-policy.xml
+    - log4j.properties
+
+- name: start services
+  tags: service
+  command: service {{ item }} start
+  with_items:
+    - hbase-regionserver
+
+- name: test
+  tags: test
+  shell: echo -e "create 'ansible_test_table', 'id'\ndisable 'ansible_test_table'\n drop 'ansible_test_table'" | hbase shell
+  run_once: true

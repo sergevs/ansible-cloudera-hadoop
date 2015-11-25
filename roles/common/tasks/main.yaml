@@ -1,0 +1,25 @@
+- name: install packages
+  tags: packages
+  yum: name={{item}} state=latest
+  with_items:
+    - "{{ java_package }}"
+    - bigtop-utils
+
+- name: install template configurations
+  tags: config
+  template: src={{ item }}.j2 dest=/etc/default/{{ item }}
+  with_items:
+    - bigtop-utils
+
+- name: generate services.xml
+  tags:
+    - config
+    - clinit
+  local_action: template src="services.xml.j2" dest={{ inventory_dir }}/workdir/services.xml
+  run_once: true
+
+- name: generate interfaces index
+  tags:
+  local_action: template src="interfaces.j2" dest={{ inventory_dir }}/workdir/interfaces
+  run_once: true
+

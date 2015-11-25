@@ -1,0 +1,51 @@
+- name: install namenode package
+  tags: package
+  yum:  name=hadoop-hdfs-namenode state=latest
+
+- name: install default configurations
+  tags: config
+  copy: src=default/{{ item }} dest=/etc/default/{{ item }}
+  with_items:
+    - hadoop-hdfs-namenode
+
+- name: install zkfc package
+  tags: package
+  yum:  name=hadoop-hdfs-zkfc state=latest
+  when:  groups['namenodes']|count > 1
+
+- name: initialize zookeeper
+  command: sudo -Hu hdfs hdfs zkfc -formatZK -force
+  when:  groups['namenodes']|count > 1
+  run_once: true
+
+- name: start zkfc
+  tags: service
+  command: service hadoop-hdfs-zkfc start
+  when:  groups['namenodes']|count > 1
+
+- name: destroy data
+  command: rm -rf {{ item }}
+  with_items: "{{ dfs_namenode_name_dir.replace('file://','').split(',') }}"
+  when: destroy_data
+
+- name: create namenode directories
+  file: dest={{ item }} owner=hdfs group=hdfs state=directory
+  with_items: "{{ dfs_namenode_name_dir.replace('file://','').split(',') }}"
+
+- name: format primary namenode
+  command: sudo -Hu hdfs hdfs namenode -format -force
+  when: ansible_hostname == groups['namenodes'][0] and destroy_data
+
+- name: start primary namenode
+  tags: service
+  command: service hadoop-hdfs-namenode start
+  when: ansible_hostname == groups['namenodes'][0]
+
+- name: init secondary instance
+  command: sudo -Hu hdfs hdfs namenode -bootstrapStandby
+  when: ansible_hostname != groups['namenodes'][0]
+
+- name: start secondary namenode
+  tags: service
+  command: service hadoop-hdfs-namenode start
+  when: ansible_hostname != groups['namenodes'][0]

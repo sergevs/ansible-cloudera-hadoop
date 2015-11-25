@@ -1,0 +1,73 @@
+- name: check number of namenodes
+  when: groups['namenodes']|count < 1 or groups['namenodes']|count > 2
+  fail: msg="expected number of namenodes is 1 or 2, you have configured {{ groups['namenodes']|count }}"
+  run_once: true
+
+- name: check number of datanodes
+  when: groups['datanodes']|count < 1
+  fail: msg="expected number of datanodes is more than 0, you have not configured any"
+  run_once: true
+
+- name: check number of yarnresourcemanager 
+  when: groups['yarnresourcemanager']|count != 1
+  fail: msg="expected number of yarnresoucemanager nodes is exactly 1, you have configured {{ groups['yarnresourcemanager']|count }}"
+  run_once: true
+
+- name: check number of journal nodes
+  when: groups['namenodes']|count > 1 and groups['journalnodes']|count < 1
+  fail: msg="expected number of journalnodes for HA setup is at least 1, you have not configured any"
+  run_once: true
+
+- name: check number of journal nodes
+  when: groups['namenodes']|count < 2 and groups['journalnodes']|count >0
+  fail: msg="{{ groups['journalnodes']|count }} journal nodes configured, however you have only 1 namenode, for HA setup at least 2 namenodes is requied"
+  run_once: true
+
+- name: check number of zookeeper nodes
+  when: groups['namenodes']|count > 1 and ( groups['zookeepernodes']|count != 3 and groups['zookeepernodes']|count != 5 )
+  fail: msg="expected number of zookeeper nodes for HA setup is 3 or 5 you have configured {{ groups['zookeepernodes']|count }}"
+  run_once: true
+
+- name: check number of hivemetastore nodes
+  when: groups['hivemetastore']|count != 0 and groups['hivemetastore']|count != 1
+  fail: msg="expected number of hivemetastore nodes is 0 or 1, you have configured {{ groups['hivemetastore']|count }}"
+  run_once: true
+
+- name: check hivemetastore prerequisites
+  when: groups['hivemetastore']|count >  0 and groups['zookeepernodes']|count < 1
+  fail: msg="hivemetastore requires at least one zookeepernode, you have not configured any"
+  run_once: true
+
+- name: check number of hue nodes
+  when: groups['hue']|count != 0 and groups['hue']|count != 1
+  fail: msg="expected number of hue nodes is 0 or 1, you have configured {{ groups['hue']|count }}"
+  run_once: true
+
+- name: check number of postgres nodes
+  when: groups['hivemetastore']|count > 0 and groups['postgresql']|count != 1
+  fail: msg="expected number of postgresql nodes or 1, you have not configured any"
+  run_once: true
+
+- name: check number of impala-state-store hosts
+  when: groups['impala-store-catalog']|count > 1
+  fail: msg="expected number of impala-store-catalog is 0 or 1, you have configured {{ groups['impala-store-catalog']|count }}"
+  run_once: true
+
+- name: check impala prerequisites
+  when: groups['impala-store-catalog'] > 0 and groups['hivemetastore']|count < 1
+  fail: msg="impala requires hivemetastore node, you have not configured any"
+  run_once: true
+
+- name: check number of hbase master hosts
+  when: groups['hbasemaster']|count > 1
+  fail: msg="expected number of hbasemaster hosts is 0 or 1, you have configured {{ groups['hbasemaster']|count }}"
+  run_once: true
+
+- name: check hbase prerequisites
+  when: groups['hbasemaster']|count > 0 and groups['zookeepernodes']|count < 1
+  fail: msg="hbase requires at least one zookeepernode, you have not configured any"
+  run_once: true
+
+- name: create workdir
+  local_action: file dest="{{ inventory_dir }}/workdir" state=directory
+  run_once: true

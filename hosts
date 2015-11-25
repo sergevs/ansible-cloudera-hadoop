@@ -1,0 +1,51 @@
+# at least one is required, 2 allowed
+# if 2, ha configured
+[namenodes]
+
+# at least one is required
+[datanodes]
+
+# exactly one is required
+# job history server will be also configured on the host
+[yarnresourcemanager]
+
+# optional
+# required if hbasemaster configured
+# 3 or 5 hosts is required if 2 namenodes configured
+[zookeepernodes]
+
+# optional
+# required if 2 namenodes configured
+[journalnodes]
+
+# optional
+# required if hivemetastore or hue configured
+[postgresql]
+
+# optional
+# required if impala-store-catalog configured
+[hivemetastore]
+
+# optional
+[impala-store-catalog]
+
+# optional
+[hbasemaster]
+
+# optional
+[hue]
+
+# please do not edit the groups below
+[hadoop:children]
+namenodes
+datanodes
+journalnodes
+yarnresourcemanager
+hivemetastore
+impala-store-catalog
+hbasemaster
+hue
+
+[java:children]
+hadoop
+zookeepernodes

@@ -1,0 +1,64 @@
+- name: install packages
+  tags: package
+  yum:  name={{ item }} state=latest
+  with_items:
+    - hive-metastore
+    - hive-server2
+    - postgresql
+    - postgresql-jdbc
+
+- name: create configuration directory
+  tags: config
+  file: path=/etc/hive/conf.{{ cluster_name }} state=directory
+
+- name: setup alternatives link
+  tags: config
+  alternatives: name=hive-conf link=/etc/hive/conf path=/etc/hive/conf.{{ cluster_name }}
+
+- name: install template configurations
+  tags: config
+  template: src=hive-site.xml.j2 dest=/etc/hive/conf/hive-site.xml
+
+- name: install files configurations
+  tags: config
+  copy: src={{ item }} dest=/etc/hive/conf/{{ item }}
+  with_items:
+    - hive-exec-log4j.properties
+    - hive-log4j.properties
+
+- name: install default configurations
+  tags: config
+  copy: src=default/{{ item }} dest=/etc/default/{{ item }}
+  with_items:
+    - hadoop-0.20-mapreduce
+    - hive-server2
+    - hive-metastore
+
+- name: create link to jdbc driver
+  file: src=/usr/share/java/postgresql-jdbc.jar dest=/usr/lib/hive/lib/postgresql-jdbc.jar state=link force=yes
+
+- name: generate sql
+  template: src="hive.sql.j2" dest=/tmp/ahive.sql
+
+- name: install .pgpass
+  template: src=".pgpass.j2" dest=/root/.pgpass mode=0600
+
+- name: create metastore database
+  command: psql -h {{ groups['postgresql'][0] }} --username postgres -f /tmp/ahive.sql chdir=/usr/lib/hive/scripts/metastore/upgrade/postgres
+
+- name: remove sql and .pgpass files
+  command: rm -f /tmp/ahive.sql /root/.pgpass
+
+- name: start services
+  tags: service
+  command: service {{ item }} start
+  with_items:
+    - hive-metastore
+    - hive-server2
+
+- name: wait
+  command: sleep 5
+
+- name: test hive
+  tags: test
+  command: sudo -Hu hdfs beeline -u jdbc:hive2://{{ ansible_hostname }}:10000 -nhiveuser -p {{ hiveuser_password }} -d org.apache.hive.jdbc.HiveDriver -e 'create table ansible_test_table ( id int )  location "/tmp/ansible_test_table"; drop table ansible_test_table;'

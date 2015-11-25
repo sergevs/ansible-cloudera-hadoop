@@ -1,0 +1,23 @@
+- name: remove old keys
+  local_action: shell rm -f {{ inventory_dir }}/workdir/{{ item }}
+  with_items:
+    - hdfs_key*
+    - hdfs_known_hosts
+  run_once: true
+
+- name: generate ssh key
+  local_action: command ssh-keygen -q -N "" -t rsa -b 2048  -f {{ inventory_dir }}/workdir/hdfs_key
+  run_once: true
+
+- name: generate known_hosts
+  local_action: shell ssh-keyscan {{ ansible_hostname }} >> {{ inventory_dir }}/workdir/hdfs_known_hosts
+  
+- name: create .ssh dir 
+  file: path=/var/lib/hadoop-hdfs/.ssh state=directory owner=hdfs group=hdfs mode=700
+
+- name: install ssh auth files
+  copy: src={{ inventory_dir }}/workdir/{{ item.src }} dest={{ item.dest }} owner=hdfs group=hdfs mode=700
+  with_items:
+    - { src: hdfs_key, dest: /var/lib/hadoop-hdfs/.ssh/id_rsa }
+    - { src: hdfs_key.pub, dest: /var/lib/hadoop-hdfs/.ssh/authorized_keys }
+    - { src: hdfs_known_hosts, dest: /var/lib/hadoop-hdfs/.ssh/known_hosts  }

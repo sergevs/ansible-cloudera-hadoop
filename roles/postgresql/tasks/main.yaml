@@ -1,0 +1,26 @@
+- name: install postgresql server and jdbc
+  tags: package
+  yum:  name=postgresql-server state=latest
+
+- name: destroy data and init data and init database
+  shell: "{{ item }}"
+  with_items:
+  - service postgresql stop
+  - rm -rf /var/lib/pgsql/data/*
+  - service postgresql initdb
+  - chkconfig postgresql on
+  when: destroy_data
+
+- name: install configuration files
+  tags: config
+  copy: src={{ item }} dest=/var/lib/pgsql/data/{{ item }} owner=postgres group=postgres
+  with_items:
+  - postgresql.conf
+  - pg_hba.conf
+
+- name: start services
+  tags: service
+  command: service postgresql start
+
+- name: set postgres password
+  command: sudo -Hu postgres psql -c "alter user postgres with password '{{ postgres_password }}';"

@@ -1,0 +1,15 @@
+- name: test ha
+  command: sudo -Hu hdfs hdfs haadmin -getServiceState {{ ansible_hostname }}
+  register: ha_state
+
+- name: shutdown active name service
+  shell: service hadoop-hdfs-namenode stop; sleep 1
+  when: ha_state is defined and ha_state.stdout.find('active') != -1
+
+- name: test mapreduce
+  command: sudo -Hu hdfs hadoop jar /usr/lib/hadoop-mapreduce/hadoop-mapreduce-examples.jar pi 1 1
+  run_once: true
+
+- name: start services 
+  command: service hadoop-hdfs-namenode start
+  when: ha_state is defined and ha_state.stdout.find('active') != -1

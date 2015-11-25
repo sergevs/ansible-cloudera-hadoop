@@ -1,0 +1,5 @@
+DROP DATABASE IF EXISTS "hue";
+create database hue;
+\c hue;
+create user hue with password '{{ hue_password }}';
+grant all privileges on database hue to hue;

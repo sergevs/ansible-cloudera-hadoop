@@ -1,0 +1,29 @@
+- name: install packages
+  tags: package
+  yum:  name={{ item }} state=latest
+  with_items:
+    - hadoop-hdfs-datanode
+    - hadoop-yarn-nodemanager 
+
+- name: destroy data
+  command: rm -rf {{ item }}
+  with_items: "{{ dfs_datanode_data_dir.replace('file://','').split(',') }}"
+  when: destroy_data 
+
+- name: create datanode directories
+  file: dest={{ item }} owner=hdfs group=hdfs state=directory
+  with_items: "{{ dfs_datanode_data_dir.replace('file://','').split(',') }}"
+
+- name: install default configurations
+  tags: config
+  copy: src=default/{{ item }} dest=/etc/default/{{ item }}
+  with_items:
+    - hadoop-hdfs-datanode
+    - hadoop-yarn-nodemanager
+
+- name: start services
+  tags: service
+  command: service {{ item }} start
+  with_items:
+    - hadoop-hdfs-datanode
+    - hadoop-yarn-nodemanager

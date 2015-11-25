@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<configuration>
+
+<property>
+  <name>hbase.cluster.distributed</name>
+  <value>true</value>
+</property>
+
+<property>
+  <name>hbase.rootdir</name>
+{% if groups['namenodes']|count > 1 %}
+  <value>hdfs://{{ cluster_name }}/hbase</value>
+{% else %}
+  <value>hdfs://{{ groups['namenodes'][0] }}:8020/hbase</value>
+{% endif %}
+</property>
+
+<property>
+  <name>hbase.zookeeper.quorum</name>
+  <value>{% for item in groups['zookeepernodes'] -%}
+         {{ item }}:2181{% if not loop.last %},{% endif %}
+         {%- endfor %}</value>
+</property>
+
+</configuration>

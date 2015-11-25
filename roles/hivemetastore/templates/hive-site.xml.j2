@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<configuration>
+
+  <property>
+    <name>javax.jdo.option.ConnectionURL</name>
+    <value>jdbc:postgresql://{{ groups['postgresql'][0] }}/metastore</value>
+    <description>JDBC connect string for a JDBC metastore</description>
+  </property>
+
+  <property>
+    <name>javax.jdo.option.ConnectionDriverName</name>
+    <value>org.postgresql.Driver</value>
+    <description>Driver class name for a JDBC metastore</description>
+  </property>
+
+  <property>
+    <name>javax.jdo.option.ConnectionUserName</name>
+    <value>hiveuser</value>
+  </property>
+
+  <property>
+    <name>javax.jdo.option.ConnectionPassword</name>
+    <value>{{ hiveuser_password }}</value>
+  </property>
+
+  <property>
+    <name>datanucleus.autoCreateSchema</name>
+    <value>false</value>
+  </property>
+
+  <property>
+    <name>datanucleus.fixedDatastore</name>
+    <value>true</value>
+  </property>
+
+  <property>
+    <name>datanucleus.autoStartMechanism</name> 
+    <value>SchemaTable</value>
+  </property> 
+
+  <property>
+    <name>hive.metastore.uris</name>
+    <value>thrift://{{ groups['hivemetastore'][0] }}:9083</value>
+    <description>IP address (or fully-qualified domain name) and port of the metastore host</description>
+  </property>
+
+  <property>
+    <name>hive.metastore.schema.verification</name>
+    <value>true</value>
+  </property>
+
+{% if groups['zookeepernodes']|count >0 %}
+  <property>
+    <name>hive.support.concurrency</name>
+    <value>true</value>
+    <description>Enable Hive's Table Lock Manager Service</description>
+  </property>
+
+  <property>
+    <name>hive.zookeeper.quorum</name>
+    <description>Zookeeper quorum used by Hive's Table Lock Manager</description>
+    <value>{% for item in groups['zookeepernodes'] -%}
+           {{ item }}{% if not loop.last %},{% endif %}
+           {%- endfor %}</value>
+  </property>
+{% else %}
+  <property>
+    <name>hive.support.concurrency</name>
+    <value>false</value>
+    <description>Enable Hive's Table Lock Manager Service</description>
+  </property>
+{% endif %}
+
+  <property>
+    <name>hive.metastore.client.socket.timeout</name>
+    <value>3600</value>
+    <description>MetaStore Client socket timeout in seconds</description>
+  </property>
+
+</configuration>

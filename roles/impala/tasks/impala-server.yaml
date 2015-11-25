@@ -1,0 +1,48 @@
+- name: install packages
+  tags: packages
+  yum:  name={{ item }} state=latest
+  with_items:
+    - impala-server
+
+- name: install packages
+  tags: packages
+  yum:  name={{ item }} state=latest
+  with_items:
+    - impala-shell
+  when: ansible_hostname == groups['datanodes'][0]
+
+- name: create configuration directory
+  tags: config
+  file: path=/etc/impala/conf.{{cluster_name}} state=directory
+
+- name: setup alternatives link
+  tags: config
+  alternatives: name=impala-conf link=/etc/impala/conf path=/etc/impala/conf.{{cluster_name}}
+
+- name: install template configurations
+  tags: config
+  template: src={{ item }}.j2 dest=/etc/impala/conf/{{ item }}
+  with_items:
+    - hive-site.xml
+    - core-site.xml
+    - hdfs-site.xml
+
+- name: install default configurations
+  tags: config
+  template: src={{ item }}.j2 dest=/etc/default/{{ item }}
+  with_items:
+    - impala
+
+- name: start services
+  tags: service
+  command: service {{ item }} start
+  with_items:
+    - impala-server
+
+- name: wait
+  command: sleep 7
+
+- name: test impala
+  tags: test
+  command: impala-shell -q 'create table ansible_test_table ( id int ) location "/tmp/ansible_test_table"; drop table ansible_test_table;'
+  when: ansible_hostname == groups['datanodes'][0]

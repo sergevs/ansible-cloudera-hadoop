@@ -1,0 +1,31 @@
+- name: install packages
+  tags: package
+  yum:  name={{ item }} state=latest
+  with_items:
+    - hadoop-yarn-resourcemanager
+    - hadoop-mapreduce-historyserver
+
+- name: install default configurations
+  tags: config
+  copy: src=default/{{ item }} dest=/etc/default/{{ item }}
+  with_items:
+    - hadoop-yarn-resourcemanager
+    - hadoop-mapreduce-historyserver
+
+- name: configure hdfs directories
+  command: sudo -Hu hdfs hdfs dfs {{ item }}
+  with_items:
+    - -mkdir /tmp
+    - -chmod -R 1777 /tmp
+    - -mkdir -p /user/history
+    - -chmod -R 1777 /user/history
+    - -chown mapred:hadoop /user/history
+    - -mkdir -p /var/log/hadoop-yarn
+    - -chown yarn:mapred /var/log/hadoop-yarn
+
+- name: start services
+  tags: service
+  command: service {{ item }} start
+  with_items:
+    - hadoop-yarn-resourcemanager
+    - hadoop-mapreduce-historyserver

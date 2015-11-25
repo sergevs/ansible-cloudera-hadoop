@@ -1,0 +1,14 @@
+- name: install packages
+  tags: package
+  yum:  name=hadoop-hdfs-journalnode state=latest
+
+- name: destroy data
+  command: rm -rf {{ dfs_journalnode_edits_dir }}
+  when: destroy_data
+
+- name: create journal node directories
+  file: dest={{ dfs_journalnode_edits_dir }} owner=hdfs group=hdfs state=directory
+
+- name: start services
+  tags: service
+  command: service hadoop-hdfs-journalnode start 

@@ -1,0 +1,29 @@
+
+hdfs namenodes state
+{% for item in groups['namenodes'] %}
+  http://{{ item }}:50070
+{% endfor %}
+
+yarn resource manager and history server
+{% for item in groups['yarnresourcemanager'] %}
+  http://{{ item }}:8088
+  http://{{ item }}:19888
+{% endfor %}
+
+impala catalog and statestore
+{% for item in groups['impala-store-catalog'] %}
+  http://{{ item }}:25020
+  http://{{ item }}:25010
+{% endfor %}
+
+datanodes ( also have /logs ) and impala-server
+{% for item in groups['datanodes'] %}
+  http://{{ item }}:50075
+  http://{{ item }}:25000
+{% endfor %}
+
+hue and oozie
+{% for item in groups['hue'] %}
+  http://{{ item }}:8888
+  http://{{ item }}:11000
+{% endfor %}

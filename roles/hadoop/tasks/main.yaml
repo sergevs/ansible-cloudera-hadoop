@@ -1,0 +1,42 @@
+- name: install packages
+  tags: packages
+  yum: name={{ item }} state=latest
+  with_items:
+    - hadoop
+
+- name: create configuration directory
+  tags: config
+  file: path=/etc/hadoop/conf.{{ cluster_name }} state=directory
+
+- name: setup alternatives link
+  tags: config
+  alternatives: name=hadoop-conf link=/etc/hadoop/conf path=/etc/hadoop/conf.{{ cluster_name }}
+
+- name: install template configurations
+  tags: config
+  template: src={{ item }}.j2 dest=/etc/hadoop/conf/{{ item }}
+  with_items:
+    - core-site.xml
+    - hdfs-site.xml
+    - mapred-site.xml
+    - yarn-site.xml
+
+- name: install files configurations
+  tags: config
+  copy: src={{ item }} dest=/etc/hadoop/conf/{{ item }}
+  with_items:
+    - capacity-scheduler.xml
+    - configuration.xsl
+    - container-executor.cfg
+    - dfs.exclude
+    - hadoop-metrics2.properties
+    - hadoop-metrics.properties
+    - hadoop-policy.xml
+    - log4j.properties
+    - yarn-env.sh
+
+- name: install default configurations
+  tags: config
+  copy: src=default/{{ item }} dest=/etc/default/{{ item }}
+  with_items:
+    - hadoop

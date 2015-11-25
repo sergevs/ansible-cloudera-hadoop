@@ -1,0 +1,68 @@
+- name: install packages
+  tags: packages
+  yum:  name={{ item }} state=latest
+  with_items:
+  - hue
+  - hadoop-httpfs
+  - postgresql
+  - python-psycopg2
+
+- name: create configuration directory
+  tags: config
+  file: path=/etc/hue/conf.{{cluster_name}} state=directory
+
+- name: setup alternatives link
+  tags: config
+  alternatives: name=hue-conf link=/etc/hue/conf path=/etc/hue/conf.{{cluster_name}}
+
+- name: install template configurations
+  tags: config
+  template: src=hue.ini.j2 dest=/etc/hue/conf/hue.ini
+
+- name: install files configurations
+  tags: config
+  copy: src={{ item }} dest=/etc/hue/conf/{{ item }}
+  with_items:
+    - log4j.properties
+    - log.conf
+
+- name: install default configurations
+  tags: config
+  copy: src=default/{{ item }} dest=/etc/default/{{ item }}
+  with_items:
+    - hadoop-httpfs
+
+- name: create warehouse dir and home for admin user
+  command: sudo -Hu hdfs hdfs dfs {{ item }}
+  with_items:
+    - -mkdir -p /user/hive/warehouse
+    - -chmod 1777 /user/hive/warehouse
+    - -mkdir -p /user/admin
+    - -chown admin /user/admin
+
+- name: generate sql
+  template: src="hue.sql.j2" dest=/tmp/hue.sql
+
+- name: install .pgpass
+  template: src=".pgpass.j2" dest=/root/.pgpass mode=0600
+
+- name: create database
+  command: psql -h {{ groups['postgresql'][0] }} --username postgres -f /tmp/hue.sql 
+
+- name: remove sql and .pgpass files
+  command: rm -f /tmp/hue.sql /root/.pgpass
+
+- name: initialize database
+  command: "{{ item }} chdir=/tmp"
+  with_items:
+    - mkdir logs
+    - /usr/lib/hue/build/env/bin/hue syncdb --noinput
+    - /usr/lib/hue/build/env/bin/hue migrate
+    - rm -rf logs
+
+- name: start services 
+  tags: service
+  command: service {{ item }} start
+  with_items:
+    - hue
+    - hadoop-httpfs 

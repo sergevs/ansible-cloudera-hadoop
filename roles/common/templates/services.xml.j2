@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            ssh_key="{{ root_ssh_key }}"
+            effective_user="root">
+
+{% if groups['namenodes']|count > 1 %}
+{% for item in groups['namenodes'] %}
+  <service id="hdfs-zkfc" host="{{ item }}"
+            start="service hadoop-hdfs-zkfc start &gt; /dev/null 2&gt; /dev/null"
+            stop="service hadoop-hdfs-zkfc stop &gt; /dev/null 2&gt; /dev/nul"
+            status="service hadoop-hdfs-zkfc status &gt; /dev/null">
+  </service>
+
+{% endfor %}
+{% endif %}
+{% for item in groups['namenodes'] %}
+  <service id="hdfs-namenode" host="{{ item }}"
+           start="service hadoop-hdfs-namenode start &gt; /dev/null"
+           stop="service hadoop-hdfs-namenode stop &gt; /dev/null"
+           status="service hadoop-hdfs-namenode status &gt; /dev/null">
+{% for item in groups['journalnodes'] %}
+       <requires id="journalnode" host="{{ item }}" strong="false"/>
+{% endfor %}
+{% for item in groups['zookeepernodes'] %}
+       <requires id="zookeeper-server" host="{{ item }}" strong="true"/>
+{% endfor %}
+{% if groups['namenodes']|count > 1 %}
+       <requires id="hdfs-zkfc" host="{{ item }}" strong="true"/>
+{% endif %}
+  </service>
+
+{% endfor %}
+{% for item in groups['datanodes'] %}
+  <service id="hdfs-datanode" host="{{ item }}"
+           start="service hadoop-hdfs-datanode start &gt; /dev/null"
+           stop="service hadoop-hdfs-datanode stop &gt; /dev/null"
+           status="service hadoop-hdfs-datanode status &gt; /dev/null">
+{% for item in groups['namenodes'] %}
+       <requires id="hdfs-namenode" host="{{ item }}" strong="false"/>
+{% endfor %}       
+  </service>
+
+  <service id="yarn-nodemanager" host="{{ item }}"
+            start="service hadoop-yarn-nodemanager start &gt; /dev/null"
+            stop="service hadoop-yarn-nodemanager stop &gt; /dev/null"
+            status="service hadoop-yarn-nodemanager status &gt; /dev/null">
+       <requires id="yarn-resourcemanager" host="{{ groups['yarnresourcemanager'][0] }}" strong="true"/>
+  </service>
+
+{% if groups['impala-store-catalog']|count > 0 %}
+  <service id="impala-server" host="{{ item }}"
+            start="service impala-server start &gt; /dev/null"
+            stop="service impala-server stop &gt; /dev/null"
+            status="service impala-server status &gt; /dev/null">
+       <requires id="impala-catalog" host="{{ groups['impala-store-catalog'][0] }}" strong="true"/>
+  </service>
+
+{% endif %}
+{% if groups['hbasemaster']|count > 0 %}
+  <service id="hbase-regionserver" host="{{ item }}"
+            start="service hbase-regionserver start &gt; /dev/null"
+            stop="service hbase-regionserver stop &gt; /dev/null"
+            status="service hbase-regionserver status &gt; /dev/null">
+       <requires id="hbase-master" host="{{ groups['hbasemaster'][0] }}" strong="true"/>
+  </service>
+
+{% endif %}
+{% endfor %}
+
+  <service id="yarn-resourcemanager" host="{{ groups['yarnresourcemanager'][0] }}"
+            start="service hadoop-yarn-resourcemanager start &gt; /dev/null"
+            stop="service hadoop-yarn-resourcemanager stop &gt; /dev/null"
+            status="service hadoop-yarn-resourcemanager status &gt; /dev/null">
+  </service>
+
+  <service id="hadoop-mapreduce-historyserver" host="{{ groups['yarnresourcemanager'][0] }}"
+            start="service hadoop-mapreduce-historyserver start &gt; /dev/null"
+            stop="service hadoop-mapreduce-historyserver stop &gt; /dev/null"
+            status="service hadoop-mapreduce-historyserver status &gt; /dev/null">
+       <requires id="yarn-resourcemanager" host="{{ groups['yarnresourcemanager'][0] }}" strong="true"/>
+  </service>
+
+{% for item in groups['zookeepernodes'] %}
+  <service id="zookeeper-server" host="{{ item }}"
+            start="service zookeeper-server start &gt; /dev/null 2&gt; /dev/null"
+            stop="service zookeeper-server stop &gt; /dev/null 2&gt; /dev/nul"
+            status="service zookeeper-server status &gt; /dev/null">
+  </service>
+
+{% endfor %}
+{% for item in groups['journalnodes'] %}
+  <service id="journalnode" host="{{ item }}"
+            start="service hadoop-hdfs-journalnode start &gt; /dev/null 2&gt; /dev/null"
+            stop="service hadoop-hdfs-journalnode stop &gt; /dev/null 2&gt; /dev/nul"
+            status="service hadoop-hdfs-journalnode status &gt; /dev/null">
+  </service>
+{% endfor %}
+
+{% for item in groups['postgresql'] %}
+  <service id="postgresql" host="{{ item }}"
+            start="service postgresql start &gt; /dev/null 2&gt; /dev/null"
+            stop="service postgresql stop &gt; /dev/null 2&gt; /dev/nul"
+            status="service postgresql status &gt; /dev/null">
+  </service>
+{% endfor %}
+
+{% for item in groups['hivemetastore'] %}
+  <service id="hive-metastore" host="{{ item }}"
+            start="service hive-metastore start &gt; /dev/null 2&gt; /dev/null"
+            stop="service hive-metastore stop &gt; /dev/null 2&gt; /dev/nul"
+            status="service hive-metastore status &gt; /dev/null">
+        <requires id="postgresql" host="{{ groups['postgresql'][0] }}"/>
+  </service>
+
+  <service id="hive-server2" host="{{ item }}"
+            start="service hive-server2 start &gt; /dev/null 2&gt; /dev/null"
+            stop="service hive-server2 stop &gt; /dev/null 2&gt; /dev/nul"
+            status="service hive-server2 status &gt; /dev/null">
+       <requires id="hive-metastore" host="{{ item }}"/>
+{% for item in groups['zookeepernodes'] %}
+       <requires id="zookeeper-server" host="{{ item }}" strong="true"/>
+{% endfor %}
+  </service>
+{% endfor %}
+
+{% for item in groups['hbasemaster'] %}
+  <service id="hbase-master" host="{{ item }}"
+            start="service hbase-master start &gt; /dev/null 2&gt; /dev/null"
+            stop="service hbase-master stop &gt; /dev/null 2&gt; /dev/nul"
+            status="service hbase-master status &gt; /dev/null">
+{% for item in groups['zookeepernodes'] %}
+       <requires id="zookeeper-server" host="{{ item }}" strong="true"/>
+{% endfor %}
+  </service>
+
+  <service id="hbase-thrift" host="{{ item }}"
+            start="service hbase-thrift start &gt; /dev/null 2&gt; /dev/null"
+            stop="service hbase-thrift stop &gt; /dev/null 2&gt; /dev/nul"
+            status="service hbase-thrift status &gt; /dev/null">
+       <requires id="hbase-master" host="{{ groups['hbasemaster'][0] }}" strong="true"/>
+  </service>
+{% endfor %}
+
+{% for item in groups['hue'] %}
+  <service id="hadoop-httpfs" host="{{ item }}"
+            start="service hadoop-httpfs start &gt; /dev/null 2&gt; /dev/null"
+            stop="service hadoop-httpfs stop &gt; /dev/null 2&gt; /dev/nul"
+            status="service hadoop-httpfs status &gt; /dev/null">
+  </service>
+
+  <service id="hue" host="{{ item }}"
+            start="service hue start &gt; /dev/null 2&gt; /dev/null"
+            stop="service hue stop &gt; /dev/null 2&gt; /dev/nul"
+            status="service hue status &gt; /dev/null">
+        <requires id="postgresql" host="{{ groups['postgresql'][0] }}" strong="true"/>
+  </service>
+
+  <service id="oozie" host="{{ item }}"
+            start="service oozie start &gt; /dev/null 2&gt; /dev/null"
+            stop="service oozie stop &gt; /dev/null 2&gt; /dev/nul"
+            status="service oozie status &gt; /dev/null">
+        <requires id="postgresql" host="{{ groups['postgresql'][0] }}" strong="true"/>
+  </service>
+{% endfor %}  
+
+{% for item in groups['impala-store-catalog'] %}
+  <service id="impala-state-store" host="{{ item }}"
+            start="service impala-state-store start &gt; /dev/null 2&gt; /dev/null"
+            stop="service impala-state-store stop &gt; /dev/null 2&gt; /dev/nul"
+            status="service impala-state-store status &gt; /dev/null">
+        <requires id="hive-metastore" host="{{ groups['hivemetastore'][0] }}"/>
+  </service>
+
+  <service id="impala-catalog" host="{{ item }}"
+            start="service impala-catalog start &gt; /dev/null 2&gt; /dev/null"
+            stop="service impala-catalog stop &gt; /dev/null 2&gt; /dev/nul"
+            status="service impala-catalog status &gt; /dev/null">
+        <requires id="impala-state-store" host="{{ item }}"/>
+  </service>
+{% endfor %}  
+
+  <group name="hdfs">
+{% for item in groups['namenodes'] %}
+    <service id="hdfs-namenode" host="{{ item }}"/>
+{% endfor %}
+{% if groups['namenodes']|count > 1 %}
+{% for item in groups['namenodes'] %}
+    <service id="hdfs-zkfc" host="{{ item }}"/>
+{% endfor %}
+{% endif %}
+{% for item in groups['journalnodes'] %}
+    <service id="journalnode" host="{{ item }}"/>
+{% endfor%}
+{% for item in groups['datanodes'] %}
+    <service id="hdfs-datanode" host="{{ item }}"/>
+{% endfor %}
+  </group>
+
+  <group name="yarn">
+    <service id="yarn-resourcemanager" host="{{ groups['yarnresourcemanager'][0] }}"/>
+    <service id="hadoop-mapreduce-historyserver" host="{{ groups['yarnresourcemanager'][0] }}"/>
+{% for item in groups['datanodes'] %}
+    <service id="yarn-nodemanager" host="{{ item }}"/>
+{% endfor %}
+  </group>
+
+{% if groups['zookeepernodes']|count > 0 %}
+  <group name="zookeeper">
+{% for item in groups['zookeepernodes'] %}
+    <service id="zookeeper-server" host="{{ item }}"/>
+{% endfor%}
+  </group>
+{% endif %}
+
+</services>

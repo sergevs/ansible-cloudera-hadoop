@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<configuration>
+
+  <property>
+    <name>oozie.service.JPAService.jdbc.driver</name>
+    <value>org.postgresql.Driver</value>
+  </property>
+  
+  <property>
+    <name>oozie.service.JPAService.jdbc.url</name>
+    <value>jdbc:postgresql://{{ groups['postgresql'][0] }}:5432/oozie</value>
+  </property>
+  
+  <property>
+    <name>oozie.service.JPAService.jdbc.username</name>
+    <value>oozie</value>
+  </property>
+
+  <property>
+    <name>oozie.service.JPAService.jdbc.password</name>
+    <value>{{ oozie_password }}</value>
+  </property>
+
+<!-- IMPORTANT to access hadoop -->
+  <property>
+    <name>oozie.service.HadoopAccessorService.hadoop.configurations</name>
+    <value>*=/etc/hadoop/conf</value>
+    <description> Comma separated AUTHORITY=HADOOP_CONF_DIR, where AUTHORITY is the HOST:PORT of the Hadoop service (JobTracker, HDFS). The wildcard '*' configuration is used when there is no exact match for an authority. The HADOOP_CONF_DIR contains the relevant Hadoop *-site.xml files. If the path is relative is looked within the Oozie configuration directory; though the path can be absolute (i.e. to point to Hadoop client conf/ directories in the local filesystem.
+    </description>
+  </property>
+
+<!-- log complaints but the config is required -->  
+  <property>
+    <name>oozie.service.ProxyUserService.proxyuser.hue.hosts</name>
+    <value>*</value>
+  </property>
+
+  <property>
+    <name>oozie.service.ProxyUserService.proxyuser.hue.groups</name>
+    <value>*</value>
+  </property>
+
+</configuration>

@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<configuration>
+
+  <property>
+    <name>mapreduce.framework.name</name>
+    <value>yarn</value>
+  </property>
+
+  <property>
+    <name>mapreduce.jobhistory.address</name>
+    <value>{{ groups['yarnresourcemanager'][0] }}:10020</value>
+  </property>
+
+<!-- tuning, uncomment if required
+  <property>
+    <name>mapreduce.reduce.speculative</name>
+    <value>false</value>
+  </property>
+
+  <property>
+    <name>mapreduce.map.memory.mb</name>
+    <value>1024</value>
+  </property>
+
+  <property>
+    <name>mapreduce.map.memory.mb</name>
+    <value>1024</value>
+    <description>Larger resource limit for maps.</description>
+  </property>
+
+  <property>
+    <name>mapreduce.reduce.memory.mb</name>
+    <value>2046</value>
+    <description>Larger resource limit for maps.</description>
+  </property>
+
+  <property>
+    <name>mapreduce.map.java.opts</name>
+    <value>-Xmx1024m</value>
+    <description>Heap-size for child jvms of maps.</description>
+  </property>
+
+  <property>
+    <name>mapreduce.reduce.memory.mb</name>
+    <value>4096</value>
+    <description>Larger resource limit for reduces.</description>
+  </property>
+-->
+  <property>
+    <name>jobtracker.thrift.address</name>
+    <value>0.0.0.0:9290</value>
+  </property>
+
+  <property>
+    <name>mapred.jobtracker.plugins</name>
+    <value>org.apache.hadoop.thriftfs.ThriftJobTrackerPlugin</value>
+    <description>Comma-separated list of jobtracker plug-ins to be activated.</description>
+  </property>
+
+  <property>
+    <name>yarn.app.mapreduce.am.staging-dir</name>
+    <value>/user</value>
+  </property>
+
+</configuration>
