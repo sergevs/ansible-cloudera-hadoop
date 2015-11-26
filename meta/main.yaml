@@ -2,7 +2,7 @@
 galaxy_info:
   author: Serge Sergeev
   description: Quick and easy cloudera hadoop components installer.
-  company: 
+  company: No Company
   license: MIT
   min_ansible_version: 1.9
   platforms:
@@ -14,4 +14,4 @@ galaxy_info:
     - cloudera
     - cloudera-hadoop
     - hadoop:hive:hbase:zookeeper:impala:oozie:hue
-dependencies:
+dependencies: []
