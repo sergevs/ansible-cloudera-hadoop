@@ -6,9 +6,9 @@ galaxy_info:
   license: MIT
   min_ansible_version: 1.9
   platforms:
-  - name: RedHat/CentOS 6
+  - name: EL
     versions:
-    - all
+    - 6
   galaxy_tags:
     - installer
     - cloudera
