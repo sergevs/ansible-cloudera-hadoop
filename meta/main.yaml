@@ -1,0 +1,17 @@
+---
+galaxy_info:
+  author: Serge Sergeev
+  description: Quick and easy cloudera hadoop components installer.
+  company: 
+  license: MIT
+  min_ansible_version: 1.9
+  platforms:
+  - name: RedHat/CentOS 6
+    versions:
+    - all
+  galaxy_tags:
+    - installer
+    - cloudera
+    - cloudera-hadoop
+    - hadoop:hive:hbase:zookeeper:impala:oozie:hue
+dependencies:
