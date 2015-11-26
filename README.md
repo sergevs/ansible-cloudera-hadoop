@@ -1,4 +1,4 @@
-# Ansible Role: cloudera-hadoop 
+# Ansible Playbook: cloudera-hadoop 
 
 An ansible playbook to deploy cloudera hadoop components to the cluster
 
