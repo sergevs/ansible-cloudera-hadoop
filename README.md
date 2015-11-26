@@ -44,7 +44,7 @@ Service configuration performed using the hosts file. The empty [hosts](https://
 * **[hue]**: configures _hue_ and _oozie_ services. 1 host is allowed. **[postgresql]** host is required for configuration data storage.
 
 #### Variables parameters:
-Please see [https://github.com/sergevs/ansible-cloudera-hadoop/blob/master/group_vars/all](group_vars/all)
+Please see [group_vars/all](https://github.com/sergevs/ansible-cloudera-hadoop/blob/master/group_vars/all)
 
 # Usage
 To start deployment run:
