@@ -5,14 +5,14 @@ An ansible playbook to deploy cloudera hadoop components to the cluster
 # Description
 The playbook is able to setup the required services for components:
 * hadoop hdfs ( with HA support )
-*	hadoop yarn map reduce
-*	zookeeper
-*	hive
-*	hbase
-*	impala
-*	oozie
-*	hue
-*	postgresql 
+* hadoop yarn map reduce
+* zookeeper
+* hive
+* hbase
+* impala
+* oozie
+* hue
+* postgresql 
 
 The configuration is _very_ simple:
 It’s only required to place hostname(s) to the appropriate group in hosts file, and the required services will be setup.
