@@ -16,12 +16,14 @@
   command: sudo -Hu hdfs hdfs dfs {{ item }}
   with_items:
     - -mkdir /tmp
-    - -chmod -R 1777 /tmp
+    - -chmod 1777 /tmp
     - -mkdir -p /user/history
-    - -chmod -R 1777 /user/history
+    - -chmod 1777 /user/history
     - -chown mapred:hadoop /user/history
-    - -mkdir -p /var/log/hadoop-yarn
+    - -mkdir -p /var/log/hadoop-yarn/apps
     - -chown yarn:mapred /var/log/hadoop-yarn
+    - -chown yarn:hadoop /var/log/hadoop-yarn/apps
+    - -chmod 1777 /var/log/hadoop-yarn/apps
 
 - name: start services
   tags: service
