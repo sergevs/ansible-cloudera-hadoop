@@ -65,7 +65,10 @@ if you have installed clinit you can also run:
 Also most hostgroups have the tag with similar name.
 
 # Requirements
+[Ansible](http://www.ansible.com) is required :). Please read [official documentation](http://docs.ansible.com/ansible/intro_installation.html#latest-release-via-yum) to install it.
+
 OS version: Redhat/CentOS 6
+
 Cloudera Hadoop version: 5.4
 
 The required for Cloudera Hadoop repositories have to be properly configured on the target hosts.
