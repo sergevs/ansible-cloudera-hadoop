@@ -24,3 +24,15 @@
 
 - name: set postgres password
   command: sudo -Hu postgres psql -c "alter user postgres with password '{{ postgres_password }}';"
+
+- name: install userdb sql
+  template: src=userdb.sql.j2 dest=/tmp/userdb.sql
+  when: user_database is defined
+
+- name: create userdb
+  command: sudo -Hu postgres psql -f /tmp/userdb.sql
+  when: user_database is defined
+
+- name: remove userdb sql
+  command: rm -f /tmp/userdb.sql
+  when: user_database is defined

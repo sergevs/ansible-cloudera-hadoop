@@ -34,3 +34,10 @@ hiveuser_password: mypassword
 oozie_password: theoozie
 # hue database password
 hue_password: thehue
+
+# a user database name
+# if specified, it will be created in postgres and hue will be configured to use it
+# uncomment the next line if a user database is required to setup
+#user_database: userdb
+# a password for user database. username will be userdb_user
+userdb_password: myfavoritepassword
