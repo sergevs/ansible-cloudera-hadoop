@@ -1,0 +1,48 @@
+- name: install packages
+  tags: packages
+  yum: name={{ item }} state=latest
+  with_items:
+    - solr-server
+
+- name: create configuration directory
+  file: path=/etc/solr/conf.{{ cluster_name }} state=directory
+
+- name: setup alternatives link
+  alternatives: name=solr-conf link=/etc/solr/conf path=/etc/solr/conf.{{ cluster_name }}
+
+- name: install default configurations
+  tags: config
+  template: src=default/{{ item }}.j2 dest=/etc/default/{{ item }}
+  with_items:
+    - solr
+
+#- name: install template configurations
+#  tags: config
+#  template: src={{ item }}.j2 dest=/etc/hbase/conf/{{ item }}
+#  with_items:
+#    - hbase-site.xml
+#    - regionservers
+
+- name: install files configurations
+  tags: config
+  copy: src={{ item }} dest=/etc/solr/conf/{{ item }}
+  with_items:
+    - solr.xml
+    - zoo.cfg
+
+- name: create hdfs directories
+  command: sudo -Hu hdfs hdfs dfs {{ item }}
+  with_items:
+    - -mkdir /solr
+    - -chown solr /solr
+  run_once: true
+
+- name: init zookeeper
+  command: solrctl init
+  run_once: true
+
+- name: start services
+  tags: service
+  command: service {{ item }} start
+  with_items:
+    - solr-server
