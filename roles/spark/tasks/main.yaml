@@ -1,0 +1,56 @@
+- name: install packages
+  tags: packages
+  yum: name={{ item }} state=latest
+  with_items:
+    - spark-core
+
+- name: install packages
+  tags: packages
+  yum: name={{ item }} state=latest
+  with_items:
+    - spark-history-server
+  when: ansible_hostname == groups['spark'][0]
+
+- name: create configuration directory
+  file: path=/etc/spark/conf.{{ cluster_name }} state=directory
+
+- name: setup alternatives link
+  alternatives: name=spark-conf link=/etc/spark/conf path=/etc/spark/conf.{{ cluster_name }}
+
+- name: install default configurations
+  tags: config
+  template: src=default/{{ item }}.j2 dest=/etc/default/{{ item }}
+  with_items:
+    - spark
+
+- name: install template configurations
+  tags: config
+  template: src={{ item }}.j2 dest=/etc/spark/conf/{{ item }}
+  with_items:
+    - spark-defaults.conf
+
+- name: install files configurations
+  tags: config
+  copy: src={{ item }} dest=/etc/spark/conf/{{ item|basename }}
+  with_fileglob:
+    - ./*
+
+- name: create hdfs directories
+  command: sudo -Hu hdfs hdfs dfs {{ item }}
+  with_items:
+    - -mkdir -p {{ spark_history_server_dir }}
+    - -chown spark:spark {{ spark_history_server_dir }}
+    - -chmod 1777 {{ spark_history_server_dir }}
+  run_once: true
+
+- name: start services
+  tags: service
+  command: service {{ item }} start
+  with_items:
+    - spark-history-server
+  when: ansible_hostname == groups['spark'][0]
+
+- name: test
+  tags: test
+  command: sudo -Hu hdfs spark-submit --master yarn-cluster --class org.apache.spark.examples.SparkPi --num-executors 2 --driver-cores 1 --driver-memory 512m --executor-memory 512m --executor-cores 2 --queue default /usr/lib/spark/lib/spark-examples.jar 10 
+  run_once: true
