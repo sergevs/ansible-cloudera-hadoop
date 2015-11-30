@@ -22,6 +22,11 @@ datanodes ( also have /logs ) and impala-server
   http://{{ item }}:25000
 {% endfor %}
 
+oozie
+{% for item in groups['oozie'] %}
+  http://{{ item }}:11000
+{% endfor %}
+
 hue and oozie
 {% for item in groups['hue'] %}
   http://{{ item }}:8888

@@ -43,14 +43,29 @@
   fail: msg="hivemetastore requires at least one zookeepernode, you have not configured any"
   run_once: true
 
+- name: check hivemetastore prerequisites
+  when: groups['hivemetastore']|count > 0 and groups['postgresql']|count != 1
+  fail: msg="hivemetastore requires postgresql node, you have not configured any"
+  run_once: true
+
+- name: check oozie prerequisites
+  when: groups['oozie']|count > 0  and groups['postgresql']|count != 1
+  fail: msg="hue requires postgresql node, you have not configured any"
+  run_once: true
+
 - name: check number of hue nodes
   when: groups['hue']|count != 0 and groups['hue']|count != 1
   fail: msg="expected number of hue nodes is 0 or 1, you have configured {{ groups['hue']|count }}"
   run_once: true
 
-- name: check number of postgres nodes
-  when: groups['hivemetastore']|count > 0 and groups['postgresql']|count != 1
-  fail: msg="expected number of postgresql nodes or 1, you have not configured any"
+- name: check hue prerequisites
+  when: groups['hue']|count > 0  and groups['postgresql']|count != 1
+  fail: msg="hue requires postgresql node, you have not configured any"
+  run_once: true
+
+- name: check hue prerequisites
+  when: (groups['hue']|intersect(groups['oozie']))|count < 1
+  fail: msg="hue have to be installed on an oozie node. please configure the same node in oozie group"
   run_once: true
 
 - name: check number of impala-state-store hosts

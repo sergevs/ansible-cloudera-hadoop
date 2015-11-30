@@ -39,6 +39,9 @@
 [spark]
 
 # optional
+[oozie]
+
+# optional
 [hue]
 
 # please do not edit the groups below
@@ -50,6 +53,9 @@ yarnresourcemanager
 hivemetastore
 impala-store-catalog
 hbasemaster
+solr
+spark
+oozie
 hue
 
 [java:children]

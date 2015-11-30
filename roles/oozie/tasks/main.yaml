@@ -4,6 +4,7 @@
   with_items:
     - oozie
     - unzip
+    - postgresql
 
 - name: create configuration directory
   tags: config
@@ -55,9 +56,11 @@
   with_items:
     - -mkdir -p /user/oozie
     - -chown oozie:oozie /user/oozie
+  run_once: true
 
 - name: install shared libraries to hdfs
   command: oozie-setup sharelib create -fs {% if groups['namenodes']|count > 1 %} hdfs://{{ cluster_name }} {% else %} hdfs://{{ groups['namenodes'][0] }}:8020 {% endif %} -locallib /usr/lib/oozie/oozie-sharelib-yarn
+  run_once: true
 
 - name: generate sql
   template: src="oozie.sql.j2" dest=/tmp/oozie.sql
@@ -67,6 +70,8 @@
 
 - name: create database
   command: psql -h {{ groups['postgresql'][0] }} --username postgres -f /tmp/oozie.sql
+  when: destroy_data
+  run_once: true
 
 - name: install files configurations
   copy: src=ext-2.2.zip dest=/tmp/ext-2.2.zip

@@ -124,9 +124,6 @@
   hosts: hue
   roles:
   - hue
-  tasks:
-  - include: roles/oozie/tasks/main.yaml
-    when: ansible_hostname is not in groups['oozie']
 
 - name: cluster
   tags: cluster
