@@ -3,7 +3,13 @@
   yum:  name={{ item }} state=latest
   with_items:
     - hadoop-yarn-resourcemanager
+
+- name: install packages
+  tags: package
+  yum:  name={{ item }} state=latest
+  with_items:
     - hadoop-mapreduce-historyserver
+  when: ansible_hostname == groups['yarnresourcemanager'][0]
 
 - name: install default configurations
   tags: config
@@ -24,10 +30,17 @@
     - -chown yarn:mapred /var/log/hadoop-yarn
     - -chown yarn:hadoop /var/log/hadoop-yarn/apps
     - -chmod 1777 /var/log/hadoop-yarn/apps
+  run_once: true
 
 - name: start services
   tags: service
   command: service {{ item }} start
   with_items:
     - hadoop-yarn-resourcemanager
+
+- name: start services
+  tags: service
+  command: service {{ item }} start
+  with_items:
     - hadoop-mapreduce-historyserver
+  when: ansible_hostname == groups['yarnresourcemanager'][0]
