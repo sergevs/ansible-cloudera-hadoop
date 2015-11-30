@@ -27,6 +27,16 @@ oozie
   http://{{ item }}:11000
 {% endfor %}
 
+hbase
+{% for item in groups['hbasemaster'] %}
+  http://{{ item }}:60010
+{% endfor %}
+
+solr
+{% for item in groups['solr'] %}
+  http://{{ item }}:8983
+{% endfor %}
+
 hue and oozie
 {% for item in groups['hue'] %}
   http://{{ item }}:8888

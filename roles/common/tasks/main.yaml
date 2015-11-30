@@ -20,6 +20,8 @@
 
 - name: generate interfaces index
   tags:
+    - config
+    - interfaces
   local_action: template src="interfaces.j2" dest={{ inventory_dir }}/workdir/interfaces
   run_once: true
 
