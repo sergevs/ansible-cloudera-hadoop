@@ -10,7 +10,7 @@
 [yarnresourcemanager]
 
 # optional
-# required if hbasemaster configured
+# can be required for other services
 # 3 or 5 hosts is required if 2 namenodes configured
 [zookeepernodes]
 
@@ -19,7 +19,7 @@
 [journalnodes]
 
 # optional
-# required if hivemetastore or hue configured
+# required if hivemetastore, oozie or hue configured
 [postgresql]
 
 # optional
