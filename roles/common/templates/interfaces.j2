@@ -27,3 +27,8 @@ hue and oozie
   http://{{ item }}:8888
   http://{{ item }}:11000
 {% endfor %}
+
+{% if groups['spark']|count >0 %}
+spark job history server
+  http://{{ groups['spark'][0] }}:18080  
+{% endif %}

@@ -45,7 +45,9 @@
             start="service hadoop-yarn-nodemanager start &gt; /dev/null"
             stop="service hadoop-yarn-nodemanager stop &gt; /dev/null"
             status="service hadoop-yarn-nodemanager status &gt; /dev/null">
-       <requires id="yarn-resourcemanager" host="{{ groups['yarnresourcemanager'][0] }}" strong="true"/>
+{% for item in groups['yarnresourcemanager'] %}
+       <requires id="yarn-resourcemanager" host="{{ item }}" strong="false"/>
+{% endfor %}
   </service>
 
 {% if groups['impala-store-catalog']|count > 0 %}
@@ -68,17 +70,21 @@
 {% endif %}
 {% endfor %}
 
-  <service id="yarn-resourcemanager" host="{{ groups['yarnresourcemanager'][0] }}"
+{% for item in groups['yarnresourcemanager'] %}
+  <service id="yarn-resourcemanager" host="{{ item }}"
             start="service hadoop-yarn-resourcemanager start &gt; /dev/null"
             stop="service hadoop-yarn-resourcemanager stop &gt; /dev/null"
             status="service hadoop-yarn-resourcemanager status &gt; /dev/null">
   </service>
+{% endfor %}
 
   <service id="hadoop-mapreduce-historyserver" host="{{ groups['yarnresourcemanager'][0] }}"
             start="service hadoop-mapreduce-historyserver start &gt; /dev/null"
             stop="service hadoop-mapreduce-historyserver stop &gt; /dev/null"
             status="service hadoop-mapreduce-historyserver status &gt; /dev/null">
-       <requires id="yarn-resourcemanager" host="{{ groups['yarnresourcemanager'][0] }}" strong="true"/>
+{% for item in groups['yarnresourcemanager'] %}
+       <requires id="yarn-resourcemanager" host="{{ item }}" strong="false"/>
+{% endfor %}
   </service>
 
 {% for item in groups['zookeepernodes'] %}
@@ -177,6 +183,25 @@
             stop="service impala-catalog stop &gt; /dev/null 2&gt; /dev/nul"
             status="service impala-catalog status &gt; /dev/null">
         <requires id="impala-state-store" host="{{ item }}"/>
+  </service>
+{% endfor %}  
+
+{% if groups['spark']|count > 0 %}
+  <service id="spark-history-server" host="{{ groups['spark'][0] }}"
+            start="service spark-history-server start &gt; /dev/null 2&gt; /dev/null"
+            stop="service spark-history-server stop &gt; /dev/null 2&gt; /dev/nul"
+            status="service spark-history-server status &gt; /dev/null">
+  </service>
+{% endif %}
+
+{% for item in groups['solr'] %}
+  <service id="solr-server" host="{{ item }}"
+            start="service solr-server start &gt; /dev/null 2&gt; /dev/null"
+            stop="service solr-server stop &gt; /dev/null 2&gt; /dev/nul"
+            status="service solr-server status &gt; /dev/null">
+{% for item in groups['zookeepernodes'] %}
+       <requires id="zookeeper-server" host="{{ item }}" strong="true"/>
+{% endfor %}
   </service>
 {% endfor %}  
 

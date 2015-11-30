@@ -45,21 +45,23 @@
   tasks:
   - include: roles/hadoop/tasks/datanode.yaml 
 
+- name: Test hdfs
+  tags: test
+  hosts: namenodes
+  tasks:
+  - include: roles/hadoop/tasks/test-hdfs.yaml
+
 - name: Deploy yarn resource manager and job history server
   tags: yarnresourcemanager
   hosts: yarnresourcemanager
   tasks:
   - include: roles/hadoop/tasks/resourcemanager.yaml
 
-- name: Test mapreduce and hdfs
+- name: Test mapreduce
   tags: test
-  hosts: namenodes
+  hosts: yarnresourcemanager
   tasks:
-  - include: roles/hadoop/tasks/test.yaml
-    when: groups['namenodes']|count == 1
-  - include: roles/hadoop/tasks/test-ha.yaml 
-    when: groups['namenodes']|count > 1
-    run_once: true
+  - include: roles/hadoop/tasks/test-mapreduce.yaml
 
 - name: Deploy postgresql 
   tags: postgresql
@@ -99,12 +101,32 @@
   - include: roles/hbase/tasks/regionserver.yaml
     when: groups['hbasemaster']|count == 1
 
+- name: Deploy spark
+  tags: spark
+  hosts: spark
+  roles:
+  - spark
+
+- name: Deploy solr search
+  tags: solr
+  hosts: solr
+  roles:
+  - solr
+
+- name: Deploy oozie
+  tags: oozie
+  hosts: oozie
+  roles:
+  - oozie
+
 - name: Deploy Hue
   tags: hue
   hosts: hue
   roles:
   - hue
-  - oozie
+  tasks:
+  - include: roles/oozie/tasks/main.yaml
+    when: ansible_hostname is not in groups['oozie']
 
 - name: cluster
   tags: cluster

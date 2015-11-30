@@ -5,8 +5,8 @@
 # at least one is required
 [datanodes]
 
-# exactly one is required
-# job history server will be also configured on the host
+# at least one is required
+# job history server will be also configured on the 1st host
 [yarnresourcemanager]
 
 # optional
@@ -31,6 +31,12 @@
 
 # optional
 [hbasemaster]
+
+# optional
+[solr]
+
+#optional
+[spark]
 
 # optional
 [hue]
