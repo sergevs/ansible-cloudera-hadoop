@@ -1,0 +1,5 @@
+drop database if exists "{{ user_database }}";
+create database {{ user_database }};
+\c {{ user_database }};
+create user userdb_user with password '{{ userdb_password }}';
+grant all privileges on database {{ user_database }} to userdb_user;
