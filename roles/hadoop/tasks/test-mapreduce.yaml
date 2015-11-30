@@ -1,0 +1,20 @@
+- name: get resource manager ha state
+  tags: test
+  command: sudo -Hu yarn  yarn rmadmin -getServiceState {{ ansible_hostname }}
+  register: ha_state
+  when: groups['yarnresourcemanager']|count > 1
+
+- name: shutdown active resource manager service
+  tags: test
+  shell: service hadoop-hdfs-namenode stop; sleep 1
+  when: groups['yarnresourcemanager']|count > 1 and ha_state is defined and ha_state.stdout.find('active') != -1
+
+- name: test mapreduce
+  tags: test
+  command: sudo -Hu hdfs hadoop jar /usr/lib/hadoop-mapreduce/hadoop-mapreduce-examples.jar pi 1 1
+  run_once: true
+
+- name: start services 
+  tags: test
+  command: service hadoop-yarn-resourcemanager start
+  when: groups['yarnresourcemanager']|count > 1 and ha_state is defined and ha_state.stdout.find('active') != -1
