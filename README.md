@@ -1,6 +1,8 @@
 # Ansible Playbook: cloudera-hadoop 
 
 An ansible playbook to deploy cloudera hadoop components to the cluster
+# Overview
+The playbook is composed according to [official cloudera guides](http://www.cloudera.com/content/www/en-us/documentation/enterprise/5-4-x/topics/cdh_ig_command_line.html) with a primary purpose of production deployment in mind. High availability for **HDFS** and **Yarn** is implemented when sufficient number of resources(hosts) is configured. From the other side, all of the components can be also deployed on a single host.
 
 # Description
 #### The playbook is able to setup the required services for components:
@@ -10,11 +12,14 @@ An ansible playbook to deploy cloudera hadoop components to the cluster
 * **hive**
 * **hbase**
 * **impala**
+* **solr**
+* **spark**
 * **oozie**
 * **hue**
 * **postgresql** 
 
 The configuration is _very_ simple:
+
 It’s only required to place hostname(s) to the appropriate group in hosts file, and the required services will be setup.
 
 The playbook contain all configuration files in roles directories. If you need to add or change any parameter you can edit
@@ -32,16 +37,19 @@ After clinit package installed you’ll be able to stop, start and see status of
 Service configuration performed using the hosts file. The empty [hosts](https://github.com/sergevs/ansible-cloudera-hadoop/blob/master/hosts) file is supplied with playbook. **You must not remove any existing group**. Leave the group empty if you don't need services the group configures. The same hostname can be placed to any hosts group. As an instance if you want setup everything on one host, just put the same hostname to each hosts group.
 
 #### Hosts file groups description:
-* **[namenodes]** : configures _namenode_ services, at least 1 host is required, 2 hosts are allowed. HA HDFS with automatic namenode failover will be configured in the case of 2 hosts.
-* **[datanodes]** : configures _datanode_ services, at least 1 host is required
-* **[yarnresourcemanager]** : configures _mapreduce_ yarn resource manager, at least 1 host is required. HA with automatic resource manager failover will be configured in the case more than 1 host. job history server will be configured on the 1st host in the group.  _node manager_ services will be configured on **[datanodes]** hosts.
-* **[zookeepernodes]** : confiugures _zookeeper_ services. 3 or 5 hosts is required for HA in the case 2 **[namenodes]** hosts configured
-* **[journalnodes]** : configures _journalnode_ services required for HA configuration, at least one host is required in the case 2 **[namenodes]** hosts configured
-* **[postgresql]** : configures _postgresql_ server. the server stores any data required for other services( see below ). 1 host is allowed.
+* **[namenodes]** : configures _namenode_ services, at least 1 host is required, 2 hosts are allowed. HA HDFS with automatic namenode failover will be configured in the case of 2 hosts configured.
+* **[datanodes]** : configures _datanode_ services, at least 1 host is required.
+* **[yarnresourcemanager]** : configures _mapreduce_ yarn resource manager, at least 1 host is required. HA with automatic resource manager failover will be configured in the case more than 1 host provided. job history server will be configured on the 1st host in the group.  _node manager_ services will be configured on **[datanodes]** hosts.
+* **[zookeepernodes]** : confiugures _zookeeper_ services. 3 or 5 hosts is required for HA in the case 2 **[namenodes]** hosts configured.
+* **[journalnodes]** : configures _journalnode_ services required for HA configuration, at least one host is required in the case 2 **[namenodes]** hosts configured.
+* **[postgresql]** : configures _postgresql_ server. the server provides a database storage required for other services( see below ). 1 host is allowed.
 * **[hivemetastore]** : configures _hive metastore_ and _hiveserver2_ services. 1 host is allowed. **[postgresql]** host is required for metadata storage.
 * **[impala-store-catalog]**: configures _impala-catalog_ and _impala-state-store_ services. 1 host is allowed. _impala-server_ will be configured on each **[datanodes]** host. **[hivemetastore]** host is required for metadata storage.
-* **[hbasemaster]**: configures _hbase-master_ services. 1 host is allowed. _hbase-regionserver_ will be configured on on each **[datanodes]** host. at least 1 **[zookeepernodes]** host is requird
-* **[hue]**: configures _hue_ and _oozie_ services. 1 host is allowed. **[postgresql]** host is required for configuration data storage.
+* **[hbasemaster]**: configures _hbase-master_ services. 1 host is allowed. _hbase-regionserver_ will be configured on on each **[datanodes]** host. at least 1 **[zookeepernodes]** host is required.
+* **[solr]**: configures _solr_ service. at least 1 **[zookeepernodes]** host is required.
+* **[spark]**: configures hosts to submit _spark_ jobs. _spark history server_ will be configured on the first host in the group.
+* **[oozie]**: configures _oozie_ service. **[postgresql]** host is required for data storage.
+* **[hue]**: configures _hue_ services. must be configured on a host from **[oozie]** group. 1 host is allowed. postgresql is used for data storage.
 
 #### Variables parameters:
 Please see [group_vars/all](https://github.com/sergevs/ansible-cloudera-hadoop/blob/master/group_vars/all)
