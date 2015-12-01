@@ -92,4 +92,4 @@ SSH key passwordless authentication must be configured for root account for all 
 
 ## License
 
-MIT
+[MIT](https://github.com/sergevs/ansible-cloudera-hadoop/blob/master/LICENSE)
