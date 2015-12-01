@@ -77,7 +77,7 @@ Also most hostgroups have the tag with similar name.
 
 OS version: Redhat/CentOS 6
 
-Cloudera Hadoop version: 5.4
+Cloudera Hadoop version: 5.4, 5.5
 
 The required for Cloudera Hadoop repositories have to be properly configured on the target hosts.
 See also [official documentation](http://www.cloudera.com/content/www/en-us/documentation/enterprise/latest/topics/cdh_ig_yumrepo_local_create.html)
