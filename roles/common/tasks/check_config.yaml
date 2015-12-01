@@ -64,7 +64,7 @@
   run_once: true
 
 - name: check hue prerequisites
-  when: (groups['hue']|intersect(groups['oozie']))|count < 1
+  when: groups['hue']|count >0 and (groups['hue']|intersect(groups['oozie']))|count < 1
   fail: msg="hue have to be installed on an oozie node. please configure the same node in oozie group"
   run_once: true
 
