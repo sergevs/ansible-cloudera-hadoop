@@ -75,7 +75,7 @@ Also most hostgroups have the tag with similar name.
 # Requirements
 [Ansible](http://www.ansible.com) is required :). Please read [official documentation](http://docs.ansible.com/ansible/intro_installation.html#latest-release-via-yum) to install it.
 
-OS version: Redhat/CentOS 6
+OS version: Redhat/CentOS 6, 7
 
 Cloudera Hadoop version: 5.4, 5.5
 
