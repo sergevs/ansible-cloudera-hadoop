@@ -6,7 +6,7 @@
 
 - name: shutdown active resource manager service
   tags: test
-  shell: service hadoop-hdfs-namenode stop; sleep 1
+  shell: service hadoop-yarn-resourcemanager stop; sleep 1
   when: groups['yarnresourcemanager']|count > 1 and ha_state is defined and ha_state.stdout.find('active') != -1
 
 - name: test mapreduce
