@@ -84,6 +84,8 @@
 
 - name: initialize database
   command: service oozie init
+  when: destroy_data
+  run_once: true
 
 - name: start services 
   tags: service

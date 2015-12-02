@@ -107,7 +107,7 @@
   <service id="postgresql" host="{{ item }}"
             start="service postgresql start &gt; /dev/null 2&gt; /dev/null"
             stop="service postgresql stop &gt; /dev/null 2&gt; /dev/nul"
-            status="service postgresql status &gt; /dev/null">
+            status="service postgresql status &gt; /dev/null 2&gt; /dev/nul">
   </service>
 {% endfor %}
 

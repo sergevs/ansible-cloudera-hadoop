@@ -43,7 +43,7 @@
 
 - name: init secondary instance
   command: sudo -Hu hdfs hdfs namenode -bootstrapStandby
-  when: ansible_hostname != groups['namenodes'][0]
+  when: ansible_hostname != groups['namenodes'][0] and destroy_data
 
 - name: start secondary namenode
   tags: service

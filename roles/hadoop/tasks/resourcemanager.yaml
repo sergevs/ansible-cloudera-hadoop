@@ -21,7 +21,7 @@
 - name: configure hdfs directories
   command: sudo -Hu hdfs hdfs dfs {{ item }}
   with_items:
-    - -mkdir /tmp
+    - -mkdir -p /tmp
     - -chmod 1777 /tmp
     - -mkdir -p /user/history
     - -chmod 1777 /user/history

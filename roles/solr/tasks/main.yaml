@@ -33,7 +33,7 @@
 - name: create hdfs directories
   command: sudo -Hu hdfs hdfs dfs {{ item }}
   with_items:
-    - -mkdir /solr
+    - -mkdir -p /solr
     - -chown solr /solr
   run_once: true
 

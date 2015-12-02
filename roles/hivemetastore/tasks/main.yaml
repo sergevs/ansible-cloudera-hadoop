@@ -45,6 +45,7 @@
 
 - name: create metastore database
   command: psql -h {{ groups['postgresql'][0] }} --username postgres -f /tmp/ahive.sql chdir=/usr/lib/hive/scripts/metastore/upgrade/postgres
+  when: destroy_data
 
 - name: remove sql and .pgpass files
   command: rm -f /tmp/ahive.sql /root/.pgpass

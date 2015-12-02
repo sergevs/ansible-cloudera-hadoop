@@ -48,6 +48,8 @@
 
 - name: create database
   command: psql -h {{ groups['postgresql'][0] }} --username postgres -f /tmp/hue.sql 
+  when: destroy_data
+  run_once: true
 
 - name: remove sql and .pgpass files
   command: rm -f /tmp/hue.sql /root/.pgpass
@@ -59,6 +61,8 @@
     - /usr/lib/hue/build/env/bin/hue syncdb --noinput
     - /usr/lib/hue/build/env/bin/hue migrate
     - rm -rf logs
+  when: destroy_data
+  run_once: true
 
 - name: start services 
   tags: service
