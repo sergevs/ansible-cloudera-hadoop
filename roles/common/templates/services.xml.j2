@@ -161,7 +161,9 @@
             status="service hue status &gt; /dev/null">
         <requires id="postgresql" host="{{ groups['postgresql'][0] }}" strong="true"/>
   </service>
+{% endfor %}
 
+{% for item in groups['oozie'] %}
   <service id="oozie" host="{{ item }}"
             start="service oozie start &gt; /dev/null 2&gt; /dev/null"
             stop="service oozie stop &gt; /dev/null 2&gt; /dev/nul"

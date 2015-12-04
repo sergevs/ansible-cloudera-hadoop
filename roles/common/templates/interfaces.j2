@@ -37,13 +37,12 @@ solr
   http://{{ item }}:8983
 {% endfor %}
 
-hue and oozie
+hue 
 {% for item in groups['hue'] %}
   http://{{ item }}:8888
-  http://{{ item }}:11000
 {% endfor %}
 
-{% if groups['spark']|count >0 %}
 spark job history server
+{% if groups['spark']|count >0 %}
   http://{{ groups['spark'][0] }}:18080  
 {% endif %}

@@ -39,6 +39,7 @@
     - -chmod 1777 /user/hive/warehouse
     - -mkdir -p /user/admin
     - -chown admin /user/admin
+  run_once: true
 
 - name: generate sql
   template: src="hue.sql.j2" dest=/tmp/hue.sql
