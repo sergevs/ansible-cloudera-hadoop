@@ -49,7 +49,7 @@ Service configuration performed using the hosts file. The empty [hosts](https://
 * **[solr]**: configures _solr_ service. at least 1 **[zookeepernodes]** host is required.
 * **[spark]**: configures hosts to submit _spark_ jobs. _spark history server_ will be configured on the first host in the group.
 * **[oozie]**: configures _oozie_ service. **[postgresql]** host is required for data storage.
-* **[hue]**: configures _hue_ services. must be configured on a host from **[oozie]** group. 1 host is allowed. postgresql is used for data storage.
+* **[hue]**: configures _hue_ services. must be configured on a host from **[oozie]** group. 1 host is allowed. **[postgresql]** is required for data storage.
 
 #### Variables parameters:
 Please see [group_vars/all](https://github.com/sergevs/ansible-cloudera-hadoop/blob/master/group_vars/all)
