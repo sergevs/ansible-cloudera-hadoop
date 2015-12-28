@@ -4,11 +4,11 @@
 
 - name: create configuration directory
   tags: config
-  file: path=/etc/zookeeper/conf.{{ cluster_name }} state=directory
+  file: path={{ etc_folder }}/zookeeper state=directory
 
 - name: setup alternatives link
   tags: config
-  alternatives: name=zookeeper-conf link=/etc/zookeeper/conf path=/etc/zookeeper/conf.{{ cluster_name }}
+  alternatives: name=zookeeper-conf link=/etc/zookeeper/conf path={{ etc_folder }}/zookeeper
 
 - name: install template configurations
   tags: config
@@ -23,20 +23,23 @@
 
 - name: install default configurations
   tags: config
-  copy: src=default/{{ item }} dest=/etc/default/{{ item }}
+  template: src=default/{{ item }}.j2 dest=/etc/default/{{ item }}
   with_items:
     - zookeeper
 
 - name: clean zookeeper data directory
-  shell: rm -rf /var/lib/zookeeper/*
+  tags: init
+  shell: rm -rf {{ zookeeper_data_dir }}/*
   when: destroy_data
 
 - name: init zookeeper directory
+  tags: init
   command: service zookeeper-server init
   when: destroy_data
 
 - name: install myid
-  template: src=myid.j2 dest=/var/lib/zookeeper/myid
+  tags: init
+  template: src=myid.j2 dest={{ zookeeper_data_dir }}/myid
   when: groups['zookeepernodes']|count > 1 and destroy_data
 
 - name: start zookeeper

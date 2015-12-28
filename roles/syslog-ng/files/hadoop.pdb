@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<patterndb version="4" pub_date="2015-11-23">
+  <ruleset name='hadoop' id="89FA0E51-A1D4-4C67-B3E7-CA5B814FA5C9">
+    <description>
+      covers hadoop java logs.
+    </description>
+    <pattern>hadoop</pattern>
+    <rules>
+      <rule provider="patterndb" id="A2AD5659-9A85-4A7C-9001-E010948D3D34" class="hadoop">
+        <patterns>
+          <pattern>@ESTRING:hadoop.date: @@ESTRING:hadoop.time: @@ESTRING:hadoop.severity: @@ESTRING:hadoop.classname::@ @ANYSTRING:hadoop.message@</pattern>
+        </patterns>
+        <examples>
+          <example>
+           <test_message program="hadoop">2015-11-17 16:54:27,586 ERROR org.apache.hadoop.hdfs.server.namenode.NameNode: RECEIVED SIGNAL 15: SIGTERM</test_message>
+           <test_values>
+            <test_value name="hadoop.date">2015-11-17</test_value>
+            <test_value name="hadoop.time">16:54:27,586</test_value>
+            <test_value name="hadoop.severity">ERROR</test_value>
+            <test_value name="hadoop.classname">org.apache.hadoop.hdfs.server.namenode.NameNode</test_value>
+            <test_value name="hadoop.message">RECEIVED SIGNAL 15: SIGTERM</test_value>
+           </test_values>
+          </example>
+        </examples>
+        <actions>
+          <action>
+            <message inherit-properties='TRUE'>
+              <values>
+                <value name="MESSAGE">${hadoop.classname}: ${hadoop.message}</value>
+		<value name="hadoop.generated">true</value> <!-- it is needed to skip original message -->
+              </values>
+            </message>
+          </action>
+        </actions>
+      </rule>
+    </rules>
+  </ruleset>
+</patterndb>
+<!--
+vim: syn=xml
+-->

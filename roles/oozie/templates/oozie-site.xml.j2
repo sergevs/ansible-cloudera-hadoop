@@ -5,12 +5,12 @@
     <name>oozie.service.JPAService.jdbc.driver</name>
     <value>org.postgresql.Driver</value>
   </property>
-  
+
   <property>
     <name>oozie.service.JPAService.jdbc.url</name>
     <value>jdbc:postgresql://{{ groups['postgresql'][0] }}:5432/oozie</value>
   </property>
-  
+
   <property>
     <name>oozie.service.JPAService.jdbc.username</name>
     <value>oozie</value>
@@ -29,7 +29,7 @@
     </description>
   </property>
 
-<!-- log complaints but the config is required -->  
+<!-- log complaints but the config is required -->
   <property>
     <name>oozie.service.ProxyUserService.proxyuser.hue.hosts</name>
     <value>*</value>
@@ -38,6 +38,30 @@
   <property>
     <name>oozie.service.ProxyUserService.proxyuser.hue.groups</name>
     <value>*</value>
+  </property>
+
+{% if oozie_ext_properties %}
+  {% for property in oozie_ext_properties %}
+  <property>
+    <name>{{property.name}}</name>
+    <value>{{property.value}}</value>
+  </property>
+  {% endfor %}
+{% endif %}
+
+
+  <property>
+    <name>oozie.service.ActionService.executor.ext.classes</name>
+    <value>
+      {{oozie_ext_classes|join(',')}}
+    </value>
+  </property>
+
+  <property>
+    <name>oozie.service.SchemaService.wf.ext.schemas</name>
+    <value>
+      {{oozie_ext_schemas|join(',')}}
+    </value>
   </property>
 
 </configuration>

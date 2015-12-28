@@ -1,0 +1,31 @@
+- name: install packages
+  tags: packages
+  yum: name={{ item }} state=latest
+  with_items:
+    - syslog-ng
+
+- name: create directories
+  tags: config
+  file: path=/etc/syslog-ng/{{ item }} state=directory mode=0755
+  with_items:
+    - conf.d
+    - patterndb.d/hadoop
+
+- name: update patterndb.d
+  tags: config
+  copy: src={{ item }} dest=/etc/syslog-ng/patterndb.d/hadoop/{{ item }}
+  with_items:
+    - hadoop.pdb
+    - hive.pdb
+    - impala.pdb
+    - oozie.pdb
+
+- name: update configuration
+  tags: config
+  template: src={{ item }} dest=/etc/syslog-ng/conf.d/{{ item }}
+  with_items:
+    - 30-hadoop.conf
+
+- name: reload syslog-ng service
+  tags: service
+  service: name=syslog-ng enabled=yes state=reloaded

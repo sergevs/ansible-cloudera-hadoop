@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<patterndb version="4" pub_date="2015-11-24">
+  <ruleset name='hive' id="F213763A-B560-418F-83DD-8D197C3F8F16">
+    <description>
+      covers hive java logs.
+    </description>
+    <pattern>hive</pattern>
+    <rules>
+      <rule provider="patterndb" id="CF9D3941-9521-432D-86F5-5DFD59CC02CA" class="hadoop">
+        <patterns>
+	<pattern>@ESTRING:hadoop.date: @@ESTRING:hadoop.time: @@ESTRING:hadoop.severity: @@ESTRING:hadoop.classname:(@@ESTRING:hadoop.filename::@@ESTRING:hadoop.funcname:(@@ESTRING:hadoop.lineno:)@) - @ANYSTRING:hadoop.message@</pattern>
+        </patterns>
+        <examples>
+          <example>
+	    <test_message program="hive">2015-10-30 14:30:39,802 ERROR Datastore.Schema (Log4JLogger.java:error(125)) - Failed initialising database.</test_message>
+            <test_values>
+              <test_value name="hadoop.date">2015-10-30</test_value>
+              <test_value name="hadoop.time">14:30:39,802</test_value>
+              <test_value name="hadoop.severity">ERROR</test_value>
+              <test_value name="hadoop.classname">Datastore.Schema </test_value>
+              <test_value name="hadoop.filename">Log4JLogger.java</test_value>
+              <test_value name="hadoop.funcname">error</test_value>
+              <test_value name="hadoop.lineno">125</test_value>
+              <test_value name="hadoop.message">Failed initialising database.</test_value>
+            </test_values>
+          </example>
+        </examples>
+        <actions>
+          <action>
+            <message inherit-properties='TRUE'>
+              <values>
+                <value name="MESSAGE">${hadoop.classname}: ${hadoop.message}</value>
+		<value name="hadoop.generated">true</value> <!-- it is needed to skip original message -->
+              </values>
+            </message>
+          </action>
+        </actions>
+      </rule>
+    </rules>
+  </ruleset>
+</patterndb>
+<!--
+vim: syn=xml
+-->
+

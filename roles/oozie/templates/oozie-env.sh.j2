@@ -7,9 +7,9 @@
 # to you under the Apache License, Version 2.0 (the
 # "License"); you may not use this file except in compliance
 # with the License.  You may obtain a copy of the License at
-# 
+#
 #      http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -34,7 +34,7 @@ export OOZIE_HTTPS_PORT=11443
 export OOZIE_HTTPS_KEYSTORE_PASS=password
 export CATALINA_OPTS="$CATALINA_OPTS -Doozie.https.port=${OOZIE_HTTPS_PORT}"
 export CATALINA_OPTS="$CATALINA_OPTS -Doozie.https.keystore.pass=${OOZIE_HTTPS_KEYSTORE_PASS}"
-export CATALINA_OPTS="$CATALINA_OPTS -Xmx1024m"
+export CATALINA_OPTS="$CATALINA_OPTS -Xmx{{ oozie_heapsize }}m"
 
 # Oozie configuration file to load from Oozie configuration directory
 #
@@ -44,7 +44,7 @@ export OOZIE_CONFIG=/etc/oozie/conf
 # Oozie logs directory
 #
 # export OOZIE_LOG=${OOZIE_HOME}/logs
-export OOZIE_LOG=/var/log/oozie
+export OOZIE_LOG={{ log_folder }}/oozie
 
 # Oozie Log4J configuration file to load from Oozie configuration directory
 #

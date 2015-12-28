@@ -3,12 +3,20 @@
   yum:  name=hadoop-hdfs-journalnode state=latest
 
 - name: destroy data
+  tags: init
   command: rm -rf {{ dfs_journalnode_edits_dir }}
   when: destroy_data
 
 - name: create journal node directories
+  tags: config
   file: dest={{ dfs_journalnode_edits_dir }} owner=hdfs group=hdfs state=directory
+
+- name: install default configurations
+  tags: config
+  template: src=default/{{ item }}.j2 dest=/etc/default/{{ item }}
+  with_items:
+    - hadoop-hdfs-journalnode
 
 - name: start services
   tags: service
-  command: service hadoop-hdfs-journalnode start 
+  command: service hadoop-hdfs-journalnode start

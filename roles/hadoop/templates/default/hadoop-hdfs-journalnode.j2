@@ -31,4 +31,4 @@ export HADOOP_PRIVILEGED_NFS_LOG_DIR=/var/log/hadoop-hdfs
 # export HADOOP_SECURE_DN_LOG_DIR=/var/log/hadoop-hdfs
 
 # JVM heapsize tuning
-# export HADOOP_HEAPSIZE=2048
+export HADOOP_HEAPSIZE={{journalnode_heapsize|default('1000')}}

@@ -1,0 +1,20 @@
+- name: install packages
+  tags: packages
+  yum: name={{ item }} state=latest
+  with_items:
+    - net-snmp
+    - net-snmp-subagent-shell
+    - hadoop-monitoring-utility
+
+- name: install subagent-shell configurations
+  tags: config
+  copy: src={{ item }} dest=/etc/snmp/subagent-shell/{{ item }}
+  with_items:
+    - subagent-shell-hadoop-conf.xml
+
+- name: start snmp services
+  tags: service
+  service: name={{ item }} enabled=yes state=restarted
+  with_items:
+    - snmpd
+    - subagent-shell

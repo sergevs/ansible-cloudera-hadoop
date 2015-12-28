@@ -8,7 +8,7 @@
   fail: msg="expected number of datanodes is more than 0, you have not configured any"
   run_once: true
 
-- name: check number of yarnresourcemanager 
+- name: check number of yarnresourcemanager
   when: groups['yarnresourcemanager']|count < 1
   fail: msg="at least one node is required for yarnresoucemanager you have not configured any"
   run_once: true
@@ -23,10 +23,10 @@
   fail: msg="{{ groups['journalnodes']|count }} journal nodes configured, however you have only 1 namenode, for HA setup at least 2 namenodes is requied"
   run_once: true
 
-- name: check number of zookeeper nodes for namenodes
-  when: groups['namenodes']|count > 1 and ( groups['zookeepernodes']|count != 3 and groups['zookeepernodes']|count != 5 )
-  fail: msg="expected number of zookeeper nodes for HA setup is 3 or 5, you have configured {{ groups['zookeepernodes']|count }}"
-  run_once: true
+#- name: check number of zookeeper nodes for namenodes
+#  when: groups['namenodes']|count > 1 and ( groups['zookeepernodes']|count != 3 and groups['zookeepernodes']|count != 5 )
+#  fail: msg="expected number of zookeeper nodes for HA setup is 3 or 5, you have configured {{ groups['zookeepernodes']|count }}"
+#  run_once: true
 
 - name: check number of zookeeper nodes for resourcemanager
   when: groups['yarnresourcemanager']|count > 1 and (  groups['zookeepernodes']|count != 1 and groups['zookeepernodes']|count != 3 and groups['zookeepernodes']|count != 5 )
@@ -86,8 +86,4 @@
 - name: check solr prerequisites
   when: groups['solr']|count > 0 and groups['zookeepernodes']|count < 1
   fail: msg="solr requires at least one zookeepernode, you have not configured any"
-  run_once: true
-
-- name: create workdir
-  local_action: file dest="{{ inventory_dir }}/workdir" state=directory
   run_once: true

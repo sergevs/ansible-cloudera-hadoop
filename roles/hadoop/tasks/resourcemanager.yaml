@@ -1,10 +1,10 @@
-- name: install packages
+- name: install resource manager package
   tags: package
   yum:  name={{ item }} state=latest
   with_items:
     - hadoop-yarn-resourcemanager
 
-- name: install packages
+- name: install history server package
   tags: package
   yum:  name={{ item }} state=latest
   with_items:
@@ -19,6 +19,7 @@
     - hadoop-mapreduce-historyserver
 
 - name: configure hdfs directories
+  tags: config
   command: sudo -Hu hdfs hdfs dfs {{ item }}
   with_items:
     - -mkdir -p /tmp

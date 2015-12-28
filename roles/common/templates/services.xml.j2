@@ -38,7 +38,7 @@
            status="service hadoop-hdfs-datanode status &gt; /dev/null">
 {% for item in groups['namenodes'] %}
        <requires id="hdfs-namenode" host="{{ item }}" strong="false"/>
-{% endfor %}       
+{% endfor %}
   </service>
 
   <service id="yarn-nodemanager" host="{{ item }}"
@@ -105,9 +105,9 @@
 
 {% for item in groups['postgresql'] %}
   <service id="postgresql" host="{{ item }}"
-            start="service postgresql start &gt; /dev/null 2&gt; /dev/null"
-            stop="service postgresql stop &gt; /dev/null 2&gt; /dev/nul"
-            status="service postgresql status &gt; /dev/null 2&gt; /dev/nul">
+            start="service postgresql{% if postgres_version %}-{{ postgres_version }}{% endif %} start &gt; /dev/null 2&gt; /dev/null"
+            stop="service postgresql{% if postgres_version %}-{{ postgres_version }}{% endif %} stop &gt; /dev/null 2&gt; /dev/nul"
+            status="service postgresql{% if postgres_version %}-{{ postgres_version }}{% endif %} status &gt; /dev/null 2&gt; /dev/nul">
   </service>
 {% endfor %}
 
@@ -170,7 +170,7 @@
             status="service oozie status &gt; /dev/null">
         <requires id="postgresql" host="{{ groups['postgresql'][0] }}" strong="true"/>
   </service>
-{% endfor %}  
+{% endfor %}
 
 {% for item in groups['impala-store-catalog'] %}
   <service id="impala-state-store" host="{{ item }}"
@@ -186,7 +186,7 @@
             status="service impala-catalog status &gt; /dev/null">
         <requires id="impala-state-store" host="{{ item }}"/>
   </service>
-{% endfor %}  
+{% endfor %}
 
 {% if groups['spark']|count > 0 %}
   <service id="spark-history-server" host="{{ groups['spark'][0] }}"
@@ -205,7 +205,7 @@
        <requires id="zookeeper-server" host="{{ item }}" strong="true"/>
 {% endfor %}
   </service>
-{% endfor %}  
+{% endfor %}
 
   <group name="hdfs">
 {% for item in groups['namenodes'] %}

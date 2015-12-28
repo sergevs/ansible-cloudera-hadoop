@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<patterndb version="4" pub_date="2015-11-24">
+  <ruleset name='oozie' id="6381025C-0352-46A4-8000-D6DD03F1E20F">
+    <description>
+      covers oozie java logs.
+    </description>
+    <pattern>oozie</pattern>
+    <rules>
+      <rule provider="patterndb" id="EC20D008-60BF-4FAD-8E43-C5C371D3EFA5" class="hadoop">
+        <patterns>
+	  <pattern>@ESTRING:hadoop.date: @@ESTRING:hadoop.time: @@ESTRING:hadoop.severity: @@ESTRING:hadoop.classname::@@ESTRING:hadoop.lineno: @- SERVER[@ESTRING:hadoop.hostname:]@ @ANYSTRING:hadoop.message@</pattern>
+        </patterns>
+        <examples>
+          <example>
+	  <test_message program="oozie">2015-11-15 16:07:34,036  INFO PauseTransitService:520 - SERVER[gp-test0.ocslab.com] USER[-] GROUP[-] TOKEN[-] APP[-] JOB[-] ACTION[-] Acquired lock for [org.apache.oozie.service.PauseTransitService]</test_message>
+           <test_values>
+            <test_value name="hadoop.date">2015-11-15</test_value>
+            <test_value name="hadoop.time">16:07:34,036</test_value>
+            <test_value name="hadoop.severity">INFO</test_value>
+            <test_value name="hadoop.classname">PauseTransitService</test_value>
+            <test_value name="hadoop.lineno">520</test_value>
+	    <test_value name="hadoop.message">2015-11-15 16:07:34,036  INFO PauseTransitService:520 - SERVER[gp-test0.ocslab.com] USER[-] GROUP[-] TOKEN[-] APP[-] JOB[-] ACTION[-] Acquired lock for [org.apache.oozie.service.PauseTransitService]</test_value>
+           </test_values>
+          </example>
+        </examples>
+        <actions>
+          <action>
+            <message inherit-properties='TRUE'>
+              <values>
+                <value name="MESSAGE">${hadoop.classname}: ${hadoop.message}</value>
+		<value name="hadoop.generated">true</value> <!-- it is needed to skip original message -->
+              </values>
+            </message>
+          </action>
+        </actions>
+      </rule>
+    </rules>
+  </ruleset>
+</patterndb>
+<!--
+vim: syn=xml
+-->
+
