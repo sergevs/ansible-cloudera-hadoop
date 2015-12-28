@@ -108,4 +108,4 @@
 
 - name: start services
   tags: service
-  command: service oozie start
+  service: name=oozie state=restarted

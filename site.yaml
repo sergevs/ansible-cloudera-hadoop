@@ -6,7 +6,11 @@
     - check_config
 
 - name: Setup local environment
-  tags: common
+  tags:
+    - common
+    - clinit
+    - interfaces
+    - config
   hosts: all
   tasks:
     - name: create working directory

@@ -85,7 +85,7 @@
 
 - name: start services
   tags: service
-  command: service {{ item }} start
+  service: name={{ item }} state=restarted
   with_items:
     - hive-metastore
     - hive-server2

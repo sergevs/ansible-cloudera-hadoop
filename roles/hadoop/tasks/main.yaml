@@ -6,15 +6,15 @@
 
 - name: create configuration directory
   tags: config
-  file: path={{etc_folder}}/hadoop state=directory
+  file: path={{ etc_folder }}/hadoop state=directory
 
 - name: setup alternatives link
   tags: config
-  alternatives: name=hadoop-conf link=/etc/hadoop/conf path={{etc_folder}}/hadoop
+  alternatives: name=hadoop-conf link=/etc/hadoop/conf path={{ etc_folder }}/hadoop
 
 - name: install template configurations
   tags: config
-  template: src={{ item }}.j2 dest={{etc_folder}}/hadoop/{{ item }}
+  template: src={{ item }}.j2 dest={{ etc_folder }}/hadoop/{{ item }}
   with_items:
     - core-site.xml
     - fair-scheduler.xml
@@ -27,7 +27,7 @@
 
 - name: install files configurations
   tags: config
-  copy: src={{ item }} dest=/etc/hadoop/conf/{{ item }}
+  copy: src={{ item }} dest={{ etc_folder }}/hadoop/{{ item }}
   with_items:
     - capacity-scheduler.xml
     - configuration.xsl

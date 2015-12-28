@@ -12,7 +12,7 @@
 
 - name: install template configurations
   tags: config
-  template: src=zoo.cfg.j2 dest=/etc/zookeeper/conf/zoo.cfg
+  template: src=zoo.cfg.j2 dest={{ etc_folder }}/zookeeper/zoo.cfg
 
 - name: install files configurations
   tags: config
@@ -44,4 +44,4 @@
 
 - name: start zookeeper
   tags: service
-  command: service zookeeper-server start
+  service: name=zookeeper-server state=restarted

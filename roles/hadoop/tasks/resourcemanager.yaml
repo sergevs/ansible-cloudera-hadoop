@@ -35,13 +35,13 @@
 
 - name: start services
   tags: service
-  command: service {{ item }} start
+  service: name={{ item }} state=restarted
   with_items:
     - hadoop-yarn-resourcemanager
 
 - name: start services
   tags: service
-  command: service {{ item }} start
+  service: name={{ item }} state=restarted
   with_items:
     - hadoop-mapreduce-historyserver
   when: ansible_hostname == groups['yarnresourcemanager'][0]

@@ -25,7 +25,7 @@
 
 - name: start services
   tags: service
-  command: service {{ item }} start
+  service: name={{ item }} state=restarted
   with_items:
     - hadoop-hdfs-datanode
     - hadoop-yarn-nodemanager

@@ -19,4 +19,4 @@
 
 - name: start services
   tags: service
-  command: service hadoop-hdfs-journalnode start
+  service: name=hadoop-hdfs-journalnode state=restarted

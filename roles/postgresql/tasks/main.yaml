@@ -21,7 +21,7 @@
 
 - name: start services
   tags: service
-  command: service postgresql{% if postgres_version %}-{{ postgres_version }}{% endif %} start
+  service: name=postgresql{% if postgres_version %}-{{ postgres_version }}{% endif %} state=restarted
 
 - name: set postgres password
   tags: init

@@ -14,7 +14,7 @@
   command: sudo -Hu hdfs hadoop jar /usr/lib/hadoop-mapreduce/hadoop-mapreduce-examples.jar pi 1 1
   run_once: true
 
-- name: start services 
+- name: start services
   tags: test
-  command: service hadoop-yarn-resourcemanager start
+  service: name=hadoop-yarn-resourcemanager state=started
   when: groups['yarnresourcemanager']|count > 1 and ha_state is defined and ha_state.stdout.find('active') != -1
