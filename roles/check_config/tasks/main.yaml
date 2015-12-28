@@ -14,19 +14,19 @@
   run_once: true
 
 - name: check number of journal nodes
-  when: groups['namenodes']|count > 1 and groups['journalnodes']|count < 1
-  fail: msg="expected number of journalnodes for HA setup is at least 1, you have not configured any"
+  when: groups['namenodes']|count > 1 and groups['journalnodes']|count % 2 == 0
+  fail: msg="expected number of journalnodes for HA setup is odd and at least 1, you have configured {{ groups['journalnodes']|count }}"
   run_once: true
 
 - name: check number of journal nodes
-  when: groups['namenodes']|count < 2 and groups['journalnodes']|count >0
+  when: groups['namenodes']|count < 2 and groups['journalnodes']|count > 0
   fail: msg="{{ groups['journalnodes']|count }} journal nodes configured, however you have only 1 namenode, for HA setup at least 2 namenodes is requied"
   run_once: true
 
-#- name: check number of zookeeper nodes for namenodes
-#  when: groups['namenodes']|count > 1 and ( groups['zookeepernodes']|count != 3 and groups['zookeepernodes']|count != 5 )
-#  fail: msg="expected number of zookeeper nodes for HA setup is 3 or 5, you have configured {{ groups['zookeepernodes']|count }}"
-#  run_once: true
+- name: check number of zookeeper nodes for namenodes
+  when: groups['namenodes']|count > 1 and ( groups['zookeepernodes']|count != 3 and groups['zookeepernodes']|count != 5 )
+  fail: msg="expected number of zookeeper nodes for HA setup is 3 or 5, you have configured {{ groups['zookeepernodes']|count }}"
+  run_once: true
 
 - name: check number of zookeeper nodes for resourcemanager
   when: groups['yarnresourcemanager']|count > 1 and (  groups['zookeepernodes']|count != 1 and groups['zookeepernodes']|count != 3 and groups['zookeepernodes']|count != 5 )
