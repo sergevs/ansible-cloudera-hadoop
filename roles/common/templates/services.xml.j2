@@ -20,7 +20,7 @@
            stop="service hadoop-hdfs-namenode stop &gt; /dev/null"
            status="service hadoop-hdfs-namenode status &gt; /dev/null">
 {% for item in groups['journalnodes'] %}
-       <requires id="journalnode" host="{{ item }}" strong="false"/>
+       <requires id="hdfs-journalnode" host="{{ item }}" strong="false"/>
 {% endfor %}
 {% for item in groups['zookeepernodes'] %}
        <requires id="zookeeper-server" host="{{ item }}" strong="true"/>
@@ -70,6 +70,17 @@
 {% endif %}
 {% endfor %}
 
+  <service id="hdfs-ready" host="{{ groups['namenodes'][0] }}"
+           start="{{ etc_folder }}/hadoop/hdfs-ready.sh">
+{% for item in groups['namenodes'] %}
+       <requires id="hdfs-namenode" host="{{ item }}" strong="true"/>
+{% endfor %}
+{% for item in groups['datanodes'] %}
+       <requires id="hdfs-datanode" host="{{ item }}" strong="true"/>
+{% endfor %}
+  </service>
+
+
 {% for item in groups['yarnresourcemanager'] %}
   <service id="yarn-resourcemanager" host="{{ item }}"
             start="service hadoop-yarn-resourcemanager start &gt; /dev/null"
@@ -96,7 +107,7 @@
 
 {% endfor %}
 {% for item in groups['journalnodes'] %}
-  <service id="journalnode" host="{{ item }}"
+  <service id="hdfs-journalnode" host="{{ item }}"
             start="service hadoop-hdfs-journalnode start &gt; /dev/null 2&gt; /dev/null"
             stop="service hadoop-hdfs-journalnode stop &gt; /dev/null 2&gt; /dev/nul"
             status="service hadoop-hdfs-journalnode status &gt; /dev/null">
@@ -178,6 +189,7 @@
             stop="service impala-state-store stop &gt; /dev/null 2&gt; /dev/nul"
             status="service impala-state-store status &gt; /dev/null">
         <requires id="hive-metastore" host="{{ groups['hivemetastore'][0] }}"/>
+        <requires id="hdfs-ready" host=" {{ groups['namenodes'][0] }}"/>
   </service>
 
   <service id="impala-catalog" host="{{ item }}"
@@ -217,11 +229,12 @@
 {% endfor %}
 {% endif %}
 {% for item in groups['journalnodes'] %}
-    <service id="journalnode" host="{{ item }}"/>
+    <service id="hdfs-journalnode" host="{{ item }}"/>
 {% endfor%}
 {% for item in groups['datanodes'] %}
     <service id="hdfs-datanode" host="{{ item }}"/>
 {% endfor %}
+    <service id="hdfs-ready" host="{{ groups['namenodes'][0] }}"/>
   </group>
 
   <group name="yarn">
@@ -240,4 +253,25 @@
   </group>
 {% endif %}
 
+{% if groups['impala-store-catalog']|count > 0 %}
+  <group name="impala">
+{% for item in groups['impala-store-catalog'] %}
+    <service id="impala-catalog" host="{{ item }}"/>
+    <service id="impala-state-store" host="{{ item }}"/>
+{% endfor %}
+{% for item in groups['datanodes'] %}
+    <service id="impala-server" host="{{ item }}"/>
+{% endfor %}
+  </group>
+{% endif %}
+
+
+{% if groups['hivemetastore']|count > 0 %}
+{% for item in groups['hivemetastore'] %}
+  <group name="hive">
+    <service id="hive-metastore" host="{{ item }}"/>
+    <service id="hive-server2" host="{{ item }}"/>
+  </group>
+{% endfor %}
+{% endif %}
 </services>

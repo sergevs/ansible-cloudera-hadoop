@@ -51,3 +51,7 @@
     - hdfs
     - yarn
     - mapred
+
+- name: install hdfs-ready utility
+  tags: config
+  template: src=bin/hdfs-ready.sh dest={{ etc_folder }}/hadoop/hdfs-ready.sh mode=0755
