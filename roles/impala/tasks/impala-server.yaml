@@ -45,7 +45,7 @@
 
 - name: wait
   tags: test
-  command: sleep 7
+  command: sleep 30
 
 - name: test impala
   tags: test

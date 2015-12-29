@@ -33,7 +33,7 @@
 
 - name: start services
   tags: service
-  service: name={{ item }} stated=restarted
+  service: name={{ item }} state=restarted
   with_items:
     - impala-state-store
     - impala-catalog

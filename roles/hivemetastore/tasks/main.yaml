@@ -4,8 +4,8 @@
   with_items:
     - hive-metastore
     - hive-server2
-    - postgresql
-    - postgresql-jdbc
+    - postgresql{{ postgres_version|default('')|replace('.', '') }}
+    - postgresql{{ postgres_version|default('')|replace('.', '') }}-jdbc
 
 - name: create configuration directory
   tags: config
@@ -62,7 +62,7 @@
 
 - name: create link to jdbc driver
   tags: config
-  file: src=/usr/share/java/postgresql-jdbc.jar dest=/usr/lib/hive/lib/postgresql-jdbc.jar state=link force=yes
+  file: src=/usr/share/java/postgresql{{ postgres_version|default('')|replace('.', '') }}-jdbc.jar dest=/usr/lib/hive/lib/postgresql-jdbc.jar state=link force=yes
 
 - name: generate sql
   tags: init

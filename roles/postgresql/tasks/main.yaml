@@ -1,6 +1,6 @@
 - name: install postgresql server and jdbc
   tags: package
-  yum:  name=postgresql{{ postgres_version|default('') }}-server state=latest
+  yum:  name=postgresql{{ postgres_version|default('')|replace('.', '') }}-server state=latest
 
 - name: destroy data and init data and init database
   tags: init
