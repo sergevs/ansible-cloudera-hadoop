@@ -187,7 +187,7 @@
             stop="service impala-state-store stop &gt; /dev/null 2&gt; /dev/null"
             status="service impala-state-store status &gt; /dev/null">
         <requires id="hive-metastore" host="{{ groups['hivemetastore'][0] }}"/>
-        <requires id="hdfs-ready" host=" {{ groups['namenodes'][0] }}"/>
+        <requires id="hdfs-ready" host="{{ groups['namenodes'][0] }}"/>
   </service>
 
   <service id="impala-catalog" host="{{ item }}"
