@@ -3,6 +3,7 @@
   yum: name={{ item }} state=latest
   with_items:
     - syslog-ng
+  when: use_syslog_ng
 
 - name: create directories
   tags: config
@@ -10,6 +11,7 @@
   with_items:
     - conf.d
     - patterndb.d/hadoop
+  when: use_syslog_ng
 
 - name: update patterndb.d
   tags: config
@@ -19,13 +21,16 @@
     - hive.pdb
     - impala.pdb
     - oozie.pdb
+  when: use_syslog_ng
 
 - name: update configuration
   tags: config
   template: src={{ item }} dest=/etc/syslog-ng/conf.d/{{ item }}
   with_items:
     - 30-hadoop.conf
+  when: use_syslog_ng
 
 - name: reload syslog-ng service
   tags: service
   service: name=syslog-ng enabled=yes state=reloaded
+  when: use_syslog_ng

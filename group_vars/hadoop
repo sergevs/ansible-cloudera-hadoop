@@ -1,0 +1,17 @@
+# service heap configuration, MB
+namenode_heapsize: 2048
+datanode_heapsize: 2048
+journalnode_heapsize: 1000
+zkfc_heapsize: 1000
+nodemanager_heapsize: 2048
+
+# hadoop directories
+#
+# name nodes directory
+dfs_namenode_name_dir: 'file:///var/lib/hadoop-hdfs/cache/hdfs/dfs/name'
+
+# datanodes directory
+dfs_datanode_data_dir: 'file:///var/lib/hadoop-hdfs/cache/hdfs/dfs/data'
+
+# journal nodes directory
+dfs_journalnode_edits_dir: '/var/lib/hadoop-hdfs/cache/hdfs/dfs/journal'

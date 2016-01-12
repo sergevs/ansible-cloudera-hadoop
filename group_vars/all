@@ -10,50 +10,12 @@ cluster_name: cluster
 log_folder: /var/log
 etc_folder: /etc/cluster
 
-# service heap configuration, MB
-namenode_heapsize: 2048
-datanode_heapsize: 2048
-journalnode_heapsize: 1000
-zkfc_heapsize: 1000
-nodemanager_heapsize: 2048
-oozie_heapsize: 1024
-
-# oozie launcher pool
-oozie_launcher:
-#  maxapps: 30
-#  weight: 1.0
-
-# additional oozie plugins
-oozie_ext_classes: []
-
-# additional oozie schemas
-oozie_ext_schemas: []
-
-# additional oozie properties
-oozie_ext_properties: []
-
-# impala additional arguments
-impala_server_args: ""
-impala_catalog_args: ""
-impala_state_store_args: ""
-
 # the ssh key to access other hosts without password under the root account
 # you have to generate it and put public key to the target hosts /root/.ssh/authorized_keys
 root_ssh_key: /root/.ssh/hadoop.key
 
 # the variable to control data destruction. non destructive plays not tested yet
 destroy_data: True
-
-# hadoop directories
-#
-# name nodes directory
-dfs_namenode_name_dir: 'file:///var/lib/hadoop-hdfs/cache/hdfs/dfs/name'
-
-# datanodes directory
-dfs_datanode_data_dir: 'file:///var/lib/hadoop-hdfs/cache/hdfs/dfs/data'
-
-# journal nodes directory
-dfs_journalnode_edits_dir: '/var/lib/hadoop-hdfs/cache/hdfs/dfs/journal'
 
 # zookeeper data directory
 zookeeper_data_dir: '/var/lib/zookeeper'

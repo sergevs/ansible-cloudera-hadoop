@@ -1,0 +1,4 @@
+# impala additional arguments
+impala_server_args: ""
+impala_catalog_args: ""
+impala_state_store_args: ""
