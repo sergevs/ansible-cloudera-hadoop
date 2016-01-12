@@ -1,4 +1,4 @@
-# Ansible Playbook: cloudera-hadoop 
+# Ansible Playbook: cloudera-hadoop
 
 An ansible playbook to deploy cloudera hadoop components to the cluster
 # Overview
@@ -16,7 +16,8 @@ The playbook is composed according to [official cloudera guides](http://www.clou
 * **spark**
 * **oozie**
 * **hue**
-* **postgresql** 
+* **postgresql**
+* **monitoring**
 
 The configuration is _very_ simple:
 
@@ -26,7 +27,7 @@ The playbook contain all configuration files in roles directories. If you need t
 the required configuration file which can be found in roles/_service_/[files|templates] directory.
 
 The playbook run configuration check tasks at start, and will stop if the configuration is not supported,
-providing a descriptive error message. 
+providing a descriptive error message.
 
 Besides of cluster( or single host ) setup, the playbook also generates cluster manager configuration file located at workdir/services.xml.
 Please visit [clinit manager home page](https://github.com/sergevs/clinit) and see [manual](https://github.com/sergevs/clinit/wiki) .
@@ -57,15 +58,20 @@ Please see [group_vars/all](https://github.com/sergevs/ansible-cloudera-hadoop/b
 # Usage
 To start deployment run:
 
-    ansible-playbook -i hosts site.yaml 
+    ansible-playbook -i hosts site.yaml
 
 if you have installed clinit you can also run:
 
     clinit -S workdir/services.xml status
     clinit -S workdir/services.xml tree
 
+To deploy configuration on existing cluster:
+
+    ansible-playbook -i hosts --skip-tags=init,postgresql site.yaml
+
 #### Tags used in playbook:
 * **package** : install rpm packages
+* **init** : clean up and initialize data
 * **config** : deploy configuration files, useful if you want just change configuration on hosts.
 * **test** : run test actions
 * **check** : check hosts configuration
