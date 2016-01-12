@@ -15,3 +15,6 @@ dfs_datanode_data_dir: 'file:///var/lib/hadoop-hdfs/cache/hdfs/dfs/data'
 
 # journal nodes directory
 dfs_journalnode_edits_dir: '/var/lib/hadoop-hdfs/cache/hdfs/dfs/journal'
+
+# impala server additional arguments
+impala_server_args: ""
