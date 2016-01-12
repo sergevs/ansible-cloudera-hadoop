@@ -23,13 +23,13 @@
   with_items:
     - hadoop-metrics2-hbase.properties
     - hbase-env.cmd
-    - hbase-env.sh  
+    - hbase-env.sh
     - hbase-policy.xml
     - log4j.properties
 
 - name: start services
   tags: service
-  command: service {{ item }} start
+  service: name={{ item }} state=restarted
   with_items:
     - hbase-regionserver
 

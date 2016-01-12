@@ -45,12 +45,12 @@
 
 - name: start services
   tags: service
-  command: service {{ item }} start
+  service: name={{ item }} state=restarted
   with_items:
     - spark-history-server
   when: ansible_hostname == groups['spark'][0]
 
 - name: test
   tags: test
-  command: sudo -Hu hdfs spark-submit --master yarn-cluster --class org.apache.spark.examples.SparkPi --num-executors 2 --driver-cores 1 --driver-memory 512m --executor-memory 512m --executor-cores 2 --queue default /usr/lib/spark/lib/spark-examples.jar 10 
+  command: sudo -Hu hdfs spark-submit --master yarn-cluster --class org.apache.spark.examples.SparkPi --num-executors 2 --driver-cores 1 --driver-memory 512m --executor-memory 512m --executor-cores 2 --queue default /usr/lib/spark/lib/spark-examples.jar 10
   run_once: true
