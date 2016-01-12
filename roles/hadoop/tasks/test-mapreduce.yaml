@@ -16,5 +16,5 @@
 
 - name: start services
   tags: test
-  service: name=hadoop-yarn-resourcemanager state=started
+  service: name=hadoop-yarn-resourcemanager state=started enabled=yes
   when: groups['yarnresourcemanager']|count > 1 and ha_state is defined and ha_state.stdout.find('active') != -1

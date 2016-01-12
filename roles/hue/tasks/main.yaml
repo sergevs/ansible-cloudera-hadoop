@@ -65,7 +65,7 @@
 
 - name: start services
   tags: service
-  service: name={{ item }} state=restarted
+  service: name={{ item }} state=restarted enabled=yes
   with_items:
     - hue
     - hadoop-httpfs

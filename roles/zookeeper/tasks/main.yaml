@@ -44,4 +44,4 @@
 
 - name: start zookeeper
   tags: service
-  service: name=zookeeper-server state=restarted
+  service: name=zookeeper-server state=restarted enabled=yes

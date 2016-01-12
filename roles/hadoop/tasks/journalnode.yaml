@@ -19,4 +19,4 @@
 
 - name: start services
   tags: service
-  service: name=hadoop-hdfs-journalnode state=restarted
+  service: name=hadoop-hdfs-journalnode state=restarted enabled=yes
