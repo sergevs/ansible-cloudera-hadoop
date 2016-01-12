@@ -53,7 +53,7 @@ Service configuration performed using the hosts file. The empty [hosts](https://
 * **[hue]**: configures _hue_ services. **[oozie]** host is required to submit jobs. **[postgresql]** is required for data storage.
 
 #### Variables parameters:
-Please see [group_vars/all](https://github.com/sergevs/ansible-cloudera-hadoop/blob/master/group_vars/all)
+Please see [group_vars](https://github.com/sergevs/ansible-cloudera-hadoop/tree/master/group_vars)
 
 # Usage
 To start deployment run:
@@ -77,6 +77,19 @@ To deploy configuration on existing cluster:
 * **check** : check hosts configuration
 
 Also most hostgroups have the tag with similar name.
+
+#### Monitoring
+Playbook optionaly provides syslog-ng configuration and snmp-subagent configuration.
+
+To use syslog-ng:
+
+* set variable **use_syslog_ng**  to true;
+* set variable **syslog_ng_destination** to existing syslog-ng destination(default value is **d_logcollector_throttled**).
+
+To use snmp set **use_snmp_subagent** to true and put following packages to repository:
+
+* [net-snmp-subagent-shell](https://github.com/sergevs/net-snmp-subagent-shell)
+* [hadoop-monitoring-utility](https://github.com/go1dshtein/hadoop-monitoring-utility)
 
 # Requirements
 [Ansible](http://www.ansible.com) is required :). Please read [official documentation](http://docs.ansible.com/ansible/intro_installation.html#latest-release-via-yum) to install it.
