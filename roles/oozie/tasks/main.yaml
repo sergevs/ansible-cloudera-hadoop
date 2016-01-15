@@ -42,9 +42,9 @@
 
 - name: install files configurations
   tags: config
-  copy: src={{ item }} dest={{ etc_folder }}/oozie/actions-conf/{{ item|basename }}
+  copy: src={{ item }} dest={{ etc_folder }}/oozie/action-conf/{{ item|basename }}
   with_fileglob:
-    - actions-conf/*
+    - action-conf/*
 
 - name: install files configurations
   tags: config
@@ -82,29 +82,23 @@
   tags: test
   command: psql -h {{ groups['postgresql'][0] }} -U oozie -d oozie -c 'select 1' -w
 
-- name: remove sql and .pgpass ext-2.2.zip files
-  command: rm -f /tmp/oozie.sql /root/.pgpass /tmp/ext-2.2.zip
-
-- name: check ext-2.2 library
-  tags: config
-  stat: path=/var/lib/oozie/ext-2.2
-  register: ext2
-
-- name: install files configurations
-  tags: config
-  copy: src=ext-2.2.zip dest=/tmp/ext-2.2.zip
-  when: not ext2.stat.exists
-
-- name: extract ext-2.2
-  tags: config
-  command: unzip /tmp/ext-2.2.zip -d /var/lib/oozie/
-  when: not ext2.stat.exists
+- name: remove sql and .pgpass files
+  command: rm -f /tmp/oozie.sql /root/.pgpass
 
 - name: initialize database
   tags: init
   command: service oozie init
   when: destroy_data
   run_once: true
+
+- name: get ext-2.2.zip if not exists
+  tags: download
+  local_action: get_url url=http://archive.cloudera.com/gplextras/misc/ext-2.2.zip dest={{ inventory_dir }}/workdir/ext-2.2.zip
+  run_once: true
+
+- name: extract ext-2.2
+  tags: config
+  unarchive: src={{ inventory_dir }}/workdir/ext-2.2.zip dest=/var/lib/oozie/
 
 - name: start services
   tags: service
