@@ -19,7 +19,7 @@
 
 <allocations>
 
-  {% if groups['oozie']|count > 0 %}
+  {% if groups['oozie']|count > 0 and 'oozie' in group_names %}
   <!-- oozie launcher poll configuration -->
     {% if oozie_launcher %}
   <pool name="launcher">

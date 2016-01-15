@@ -71,14 +71,14 @@
 - name: install .pgpass
   template: src=".pgpass.j2" dest=/root/.pgpass mode=0600
 
-- name: check postgresql connection
-  tags: test
-  command: psql -h {{ groups['postgresql'][0] }} -U hiveuser -d metastore -c 'select 1' -w
-
 - name: create metastore database
   tags: init
   command: psql -h {{ groups['postgresql'][0] }} --username postgres -f /tmp/ahive.sql chdir=/usr/lib/hive/scripts/metastore/upgrade/postgres
   when: destroy_data
+
+- name: check postgresql connection
+  tags: test
+  command: psql -h {{ groups['postgresql'][0] }} -U hiveuser -d metastore -c 'select 1' -w
 
 - name: remove sql and .pgpass files
   command: rm -f /tmp/ahive.sql /root/.pgpass

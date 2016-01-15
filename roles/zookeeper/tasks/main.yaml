@@ -27,6 +27,10 @@
   with_items:
     - zookeeper
 
+- name: ensure data dir
+  tags: config
+  file: path={{ zookeeper_data_dir }} state=directory owner=zookeeper group=zookeeper
+
 - name: clean zookeeper data directory
   tags: init
   shell: rm -rf {{ zookeeper_data_dir }}/*
