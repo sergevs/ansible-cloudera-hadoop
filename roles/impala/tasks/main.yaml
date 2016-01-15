@@ -7,11 +7,11 @@
 
 - name: create configuration directory
   tags: config
-  file: path=/etc/impala/conf.{{cluster_name}} state=directory
+  file: path={{ etc_folder }}/impala state=directory
 
 - name: setup alternatives link
   tags: config
-  alternatives: name=impala-conf link=/etc/impala/conf path=/etc/impala/conf.{{cluster_name}}
+  alternatives: name=impala-conf link=/etc/impala/conf path={{ etc_folder }}/impala
 
 - name: install template configurations
   tags: config
@@ -27,9 +27,13 @@
   with_items:
     - impala
 
+- name: create log folders
+  tags: config
+  file: path={{ log_folder }}/impala state=directory owner=impala mode=0755
+
 - name: start services
   tags: service
-  command: service {{ item }} start
+  service: name={{ item }} state=restarted enabled=yes
   with_items:
     - impala-state-store
     - impala-catalog

@@ -13,11 +13,11 @@
   tags: test
   command: sudo -Hu hdfs hdfs dfs {{ item }} /ansible_hdfs_test
   with_items:
-    - -touchz 
+    - -touchz
     - -rm
   run_once: true
 
-- name: start services 
+- name: start services
   tags: test
-  command: service hadoop-hdfs-namenode start
+  service: name=hadoop-hdfs-namenode state=started enabled=yes
   when: groups['namenodes']|count > 1 and ha_state is defined and ha_state.stdout.find('active') != -1

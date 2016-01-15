@@ -1,4 +1,4 @@
-# Ansible Playbook: cloudera-hadoop 
+# Ansible Playbook: cloudera-hadoop
 
 An ansible playbook to deploy cloudera hadoop components to the cluster
 # Overview
@@ -16,7 +16,8 @@ The playbook is composed according to [official cloudera guides](http://www.clou
 * **spark**
 * **oozie**
 * **hue**
-* **postgresql** 
+* **postgresql**
+* **monitoring**
 
 The configuration is _very_ simple:
 
@@ -26,7 +27,7 @@ The playbook contain all configuration files in roles directories. If you need t
 the required configuration file which can be found in roles/_service_/[files|templates] directory.
 
 The playbook run configuration check tasks at start, and will stop if the configuration is not supported,
-providing a descriptive error message. 
+providing a descriptive error message.
 
 Besides of cluster( or single host ) setup, the playbook also generates cluster manager configuration file located at workdir/services.xml.
 Please visit [clinit manager home page](https://github.com/sergevs/clinit) and see [manual](https://github.com/sergevs/clinit/wiki) .
@@ -52,25 +53,43 @@ Service configuration performed using the hosts file. The empty [hosts](https://
 * **[hue]**: configures _hue_ services. **[oozie]** host is required to submit jobs. **[postgresql]** is required for data storage.
 
 #### Variables parameters:
-Please see [group_vars/all](https://github.com/sergevs/ansible-cloudera-hadoop/blob/master/group_vars/all)
+Please see [group_vars](https://github.com/sergevs/ansible-cloudera-hadoop/tree/master/group_vars)
 
 # Usage
 To start deployment run:
 
-    ansible-playbook -i hosts site.yaml 
+    ansible-playbook -i hosts site.yaml
 
 if you have installed clinit you can also run:
 
     clinit -S workdir/services.xml status
     clinit -S workdir/services.xml tree
 
+To deploy configuration on existing cluster:
+
+    ansible-playbook -i hosts --skip-tags=init,postgresql site.yaml
+
 #### Tags used in playbook:
 * **package** : install rpm packages
+* **init** : clean up and initialize data
 * **config** : deploy configuration files, useful if you want just change configuration on hosts.
 * **test** : run test actions
 * **check** : check hosts configuration
 
 Also most hostgroups have the tag with similar name.
+
+#### Monitoring
+Playbook optionaly provides syslog-ng configuration and snmp-subagent configuration.
+
+To use syslog-ng:
+
+* set variable **use_syslog_ng**  to true;
+* set variable **syslog_ng_destination** to existing syslog-ng destination(default value is **d_logcollector_throttled**).
+
+To use snmp set **use_snmp_subagent** to true and put following packages to repository:
+
+* [net-snmp-subagent-shell](https://github.com/sergevs/net-snmp-subagent-shell)
+* [hadoop-monitoring-utility](https://github.com/go1dshtein/hadoop-monitoring-utility)
 
 # Requirements
 [Ansible](http://www.ansible.com) is required :). Please read [official documentation](http://docs.ansible.com/ansible/intro_installation.html#latest-release-via-yum) to install it.

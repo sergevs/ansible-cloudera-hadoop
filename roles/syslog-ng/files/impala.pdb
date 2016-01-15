@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<patterndb version="4" pub_date="2015-11-25">
+  <ruleset name='impala' id="E159C3D6-A452-4CCE-9876-EC38A7ECC69D">
+    <description>
+      covers impala java logs.
+    </description>
+    <pattern>impala</pattern>
+    <rules>
+      <rule provider="patterndb" id="4DE94FF9-B040-4A50-8BE4-FD5934124DD5" class="hadoop">
+        <patterns>
+	  <pattern>@ESTRING:hadoop.code: @@STRING:hadoop.time:.:@@QSTRING:hadoop.pid: @@ESTRING:hadoop.filename::@@ESTRING:hadoop.lineno:]@ @ANYSTRING:hadoop.message@</pattern>
+        </patterns>
+        <examples>
+          <example>
+           <test_message program="impala">I1124 17:23:12.848029  6746 authentication.cc:1014] External communication is not authenticated</test_message>
+           <test_values>
+            <test_value name="hadoop.code">I1124</test_value>
+            <test_value name="hadoop.time">17:23:12,848029</test_value>
+            <test_value name="hadoop.pid">6746</test_value>
+            <test_value name="hadoop.filename">authentication.cc</test_value>
+            <test_value name="hadoop.lineno">1014</test_value>
+            <test_value name="hadoop.message">External communication is not authenticated</test_value>
+           </test_values>
+          </example>
+        </examples>
+        <actions>
+          <action>
+            <message inherit-properties='TRUE'>
+              <values>
+                <value name="MESSAGE">[${hadoop.code}] ${hadoop.filename}: ${hadoop.message}</value>
+		<value name="hadoop.generated">true</value> <!-- it is needed to skip original message -->
+              </values>
+            </message>
+          </action>
+        </actions>
+      </rule>
+    </rules>
+  </ruleset>
+</patterndb>
+<!--
+vim: syn=xml
+-->
+

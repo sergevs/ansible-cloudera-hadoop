@@ -2,133 +2,157 @@
 - name: Check hosts file
   tags: check
   hosts: all
+  roles:
+    - check_config
+
+- name: Setup local environment
+  tags:
+    - common
+    - clinit
+    - interfaces
+    - config
+  hosts: all
   tasks:
-  - include: roles/common/tasks/check_config.yaml
+    - name: create working directory
+      local_action: file dest="{{ inventory_dir }}/workdir" state=directory
+      run_once: true
 
 - name: Prepare hosts for cloudera hadoop cluster
   tags: common
   hosts: java
   roles:
-  - common
-
-- name: Deploy hadoop configuration
-  tags: 
-  - config
-  - hadoop
-  hosts: hadoop
-  roles:
-  - hadoop
+    - common
 
 - name: Deploy zookeeper
   hosts: zookeepernodes
   tags: zookeepernodes
   roles:
-  - zookeeper
+    - zookeeper
+
+- name: Deploy hadoop configuration
+  tags:
+    - config
+    - hadoop
+  hosts: hadoop
+  roles:
+    - hadoop
 
 - name: Deploy journal nodes
   tags: journalnodes
   hosts: journalnodes
   tasks:
-  - include: roles/hadoop/tasks/journalnode.yaml
+    - include: roles/hadoop/tasks/journalnode.yaml
 
 - name: Deploy namenodes
   tags: namenodes
   hosts: namenodes
   tasks:
-  - include: roles/hadoop/tasks/namenode.yaml 
-  - include: roles/hadoop/tasks/namenodes-fence.yaml 
-    when: groups['namenodes']|count > 1
+    - include: roles/hadoop/tasks/namenode.yaml
+    - include: roles/hadoop/tasks/namenodes-fence.yaml
+      when: groups['namenodes']|count > 1
 
 - name: Deploy datanodes
   tags: datanodes
   hosts: datanodes
   tasks:
-  - include: roles/hadoop/tasks/datanode.yaml 
+    - include: roles/hadoop/tasks/datanode.yaml
 
 - name: Test hdfs
   tags: test
   hosts: namenodes
   tasks:
-  - include: roles/hadoop/tasks/test-hdfs.yaml
+    - include: roles/hadoop/tasks/test-hdfs.yaml
 
 - name: Deploy yarn resource manager and job history server
   tags: yarnresourcemanager
   hosts: yarnresourcemanager
   tasks:
-  - include: roles/hadoop/tasks/resourcemanager.yaml
+    - include: roles/hadoop/tasks/resourcemanager.yaml
 
 - name: Test mapreduce
   tags: test
   hosts: yarnresourcemanager
   tasks:
-  - include: roles/hadoop/tasks/test-mapreduce.yaml
+    - include: roles/hadoop/tasks/test-mapreduce.yaml
 
-- name: Deploy postgresql 
+- name: Deploy postgresql
   tags: postgresql
   hosts: postgresql
   roles:
-  - postgresql
+    - postgresql
 
 - name: Deploy hive metastore
   tags: hivemetastore
   hosts: hivemetastore
   roles:
-  - hivemetastore
+    - hivemetastore
 
 - name: Deploy impala state-store and catalog
   tags: impala
   hosts: impala-store-catalog
   roles:
-  - impala
+    - impala
 
 - name: Deploy impala daemon on datanodes
   tags: impala
   hosts: datanodes
   tasks:
-  - include: roles/impala/tasks/impala-server.yaml
-    when: groups['impala-store-catalog']|count == 1
+    - include: roles/impala/tasks/impala-server.yaml
+      when: groups['impala-store-catalog']|count == 1
 
 - name: Deploy HBase
   tags: hbase
   hosts: hbasemaster
   roles:
-  - hbase
+    - hbase
 
 - name: Deploy HBase regionservers on datanodes
   tags: hbase
   hosts: datanodes
   tasks:
-  - include: roles/hbase/tasks/regionserver.yaml
-    when: groups['hbasemaster']|count == 1
+    - include: roles/hbase/tasks/regionserver.yaml
+      when: groups['hbasemaster']|count == 1
 
 - name: Deploy spark
   tags: spark
   hosts: spark
   roles:
-  - spark
+    - spark
 
 - name: Deploy solr search
   tags: solr
   hosts: solr
   roles:
-  - solr
+    - solr
 
 - name: Deploy oozie
   tags: oozie
   hosts: oozie
   roles:
-  - oozie
+    - oozie
 
 - name: Deploy Hue
   tags: hue
   hosts: hue
   roles:
-  - hue
+    - hue
+
+- name: Deploy snmp monitoring
+  tags: snmp
+  hosts: monitoring
+  roles:
+    - snmp
+
+- name: Deploy syslog-ng monitoring
+  tags: syslog-ng
+  hosts: monitoring
+  roles:
+    - syslog-ng
 
 - name: cluster
   tags: cluster
   hosts: yarnresourcemanager
   tasks:
-  - debug: msg="{{ lookup('pipe', 'echo; clinit -S workdir/services.xml --nocolors tree;echo =')}}"
-    run_once: true
+    - debug: msg="{{ lookup('pipe', 'echo; clinit -S workdir/services.xml --nocolors tree;echo =')}}"
+      run_once: true
 

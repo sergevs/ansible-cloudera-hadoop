@@ -11,6 +11,15 @@
   with_items:
     - bigtop-utils
 
+- name: create directories
+  tags: config
+  # is this a 'dirname' or just regex_replace? dirname would just strip '/' off the end
+  file: path="{{ item | regex_replace('[^/]+/*$','') }}" state=directory owner=root group=root mode=755 follow=yes
+  with_items:
+    - "{{ zookeeper_data_dir }}"
+    - "{{ log_folder }}"
+    - "{{ etc_folder }}"
+
 - name: generate services.xml
   tags:
     - config

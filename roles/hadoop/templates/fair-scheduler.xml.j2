@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<!--
+  This is a sample configuration file for the Fair Scheduler. For details
+  on the options, please refer to the fair scheduler documentation at
+  http://hadoop.apache.org/core/docs/r0.21.0/fair_scheduler.html.
+
+  To create your own configuration, copy this file to conf/fair-scheduler.xml
+  and add the following property in mapred-site.xml to point Hadoop to the
+  file, replacing [HADOOP_HOME] with the path to your installation directory:
+    <property>
+      <name>mapred.fairscheduler.allocation.file</name>
+      <value>[HADOOP_HOME]/conf/fair-scheduler.xml</value>
+    </property>
+
+  Note that all the parameters in the configuration file below are optional,
+  including the parameters inside <pool> and <user> elements. It is only
+  necessary to set the ones you want to differ from the defaults.
+-->
+
+<allocations>
+
+  {% if groups['oozie']|count > 0 and 'oozie' in group_names %}
+  <!-- oozie launcher poll configuration -->
+    {% if oozie_launcher %}
+  <pool name="launcher">
+    <maxRunningApps>{{oozie_launcher.maxapps|default('10')}}</maxRunningApps>
+    <weight>{{oozie_launcher.weight|default('1.0')}}</weight>
+  </pool>
+    {% else %}
+  <pool name="launcher">
+    <maxRunningApps>10</maxRunningApps>
+  </pool>
+    {% endif %}
+  {% endif %}
+
+  <poolMaxJobsDefault>20</poolMaxJobsDefault>
+
+  <userMaxJobsDefault>20</userMaxJobsDefault>
+
+  <defaultMinSharePreemptionTimeout>600</defaultMinSharePreemptionTimeout>
+
+  <fairSharePreemptionTimeout>600</fairSharePreemptionTimeout>
+
+  <queueMaxAMShareDefault>0.5</queueMaxAMShareDefault>
+
+</allocations>
+<!--
+vim:syn=xml
+-->
+

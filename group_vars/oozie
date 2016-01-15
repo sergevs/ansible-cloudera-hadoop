@@ -1,0 +1,16 @@
+# oozie server heapsize
+oozie_heapsize: 1024
+
+# oozie launcher pool
+oozie_launcher:
+#  maxapps: 30
+#  weight: 1.0
+
+# additional oozie plugins
+oozie_ext_classes: []
+
+# additional oozie schemas
+oozie_ext_schemas: []
+
+# additional oozie properties
+oozie_ext_properties: []

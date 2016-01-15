@@ -35,8 +35,6 @@
 - name: create warehouse dir and home for admin user
   command: sudo -Hu hdfs hdfs dfs {{ item }}
   with_items:
-    - -mkdir -p /user/hive/warehouse
-    - -chmod 1777 /user/hive/warehouse
     - -mkdir -p /user/admin
     - -chown admin /user/admin
   run_once: true
@@ -48,7 +46,7 @@
   template: src=".pgpass.j2" dest=/root/.pgpass mode=0600
 
 - name: create database
-  command: psql -h {{ groups['postgresql'][0] }} --username postgres -f /tmp/hue.sql 
+  command: psql -h {{ groups['postgresql'][0] }} --username postgres -f /tmp/hue.sql
   when: destroy_data
   run_once: true
 
@@ -65,9 +63,9 @@
   when: destroy_data
   run_once: true
 
-- name: start services 
+- name: start services
   tags: service
-  command: service {{ item }} start
+  service: name={{ item }} state=restarted enabled=yes
   with_items:
     - hue
-    - hadoop-httpfs 
+    - hadoop-httpfs

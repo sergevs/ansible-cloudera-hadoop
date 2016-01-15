@@ -1,0 +1,1 @@
+syslog_ng_destination: d_logcollector_throttled

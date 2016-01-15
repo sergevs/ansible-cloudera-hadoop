@@ -1,4 +1,4 @@
-- name: install packages
+- name: install oozie packages
   tags: packages
   yum:  name={{ item }} state=latest
   with_items:
@@ -8,11 +8,11 @@
 
 - name: create configuration directory
   tags: config
-  file: path=/etc/oozie/conf.{{ cluster_name }} state=directory
+  file: path={{ etc_folder }}/oozie state=directory
 
 - name: setup alternatives link
   tags: config
-  alternatives: name=oozie-conf link=/etc/oozie/conf path=/etc/oozie/conf.{{ cluster_name }}
+  alternatives: name=oozie-conf link=/etc/oozie/conf path={{ etc_folder }}/oozie
 
 - name: setup alternatives link
   tags: config
@@ -20,16 +20,17 @@
 
 - name: install template configurations
   tags: config
-  template: src="oozie-site.xml.j2" dest=/etc/oozie/conf/oozie-site.xml
+  template: src="{{ item }}.j2" dest={{ etc_folder }}/oozie/{{ item }}
+  with_items:
+    - oozie-site.xml
+    - oozie-env.sh
 
 - name: install files configurations
   tags: config
-  copy: src={{ item }} dest=/etc/oozie/conf/{{ item }}
+  copy: src={{ item }} dest={{ etc_folder }}/oozie/{{ item }}
   with_items:
     - hadoop-config.xml
     - oozie-default.xml
-    - oozie-env.cmd
-    - oozie-env.sh
     - oozie-log4j.properties
 
 - name: create config directories
@@ -41,17 +42,18 @@
 
 - name: install files configurations
   tags: config
-  copy: src={{ item }} dest=/etc/oozie/conf/actions-conf/{{ item|basename }}
+  copy: src={{ item }} dest={{ etc_folder }}/oozie/actions-conf/{{ item|basename }}
   with_fileglob:
     - actions-conf/*
 
 - name: install files configurations
   tags: config
-  copy: src={{ item }} dest=/etc/oozie/conf/hadoop-conf/{{ item|basename }}
+  copy: src={{ item }} dest={{ etc_folder }}/oozie/hadoop-conf/{{ item|basename }}
   with_fileglob:
     - hadoop-conf/*
 
 - name: create hdfs directories
+  tags: init
   command: sudo -Hu hdfs hdfs dfs {{ item }}
   with_items:
     - -mkdir -p /user/oozie
@@ -59,34 +61,51 @@
   run_once: true
 
 - name: install shared libraries to hdfs
+  tags: config
   command: oozie-setup sharelib create -fs {% if groups['namenodes']|count > 1 %} hdfs://{{ cluster_name }} {% else %} hdfs://{{ groups['namenodes'][0] }}:8020 {% endif %} -locallib /usr/lib/oozie/oozie-sharelib-yarn
   run_once: true
 
 - name: generate sql
+  tags: init
   template: src="oozie.sql.j2" dest=/tmp/oozie.sql
 
 - name: install .pgpass
   template: src=".pgpass.j2" dest=/root/.pgpass mode=0600
 
 - name: create database
+  tags: init
   command: psql -h {{ groups['postgresql'][0] }} --username postgres -f /tmp/oozie.sql
   when: destroy_data
   run_once: true
 
-- name: install files configurations
-  copy: src=ext-2.2.zip dest=/tmp/ext-2.2.zip
-
-- name: extract ext-2.2
-  command: unzip /tmp/ext-2.2.zip -d /var/lib/oozie/
+- name: check postgresql connection
+  tags: test
+  command: psql -h {{ groups['postgresql'][0] }} -U oozie -d oozie -c 'select 1' -w
 
 - name: remove sql and .pgpass ext-2.2.zip files
   command: rm -f /tmp/oozie.sql /root/.pgpass /tmp/ext-2.2.zip
 
+- name: check ext-2.2 library
+  tags: config
+  stat: path=/var/lib/oozie/ext-2.2
+  register: ext2
+
+- name: install files configurations
+  tags: config
+  copy: src=ext-2.2.zip dest=/tmp/ext-2.2.zip
+  when: not ext2.stat.exists
+
+- name: extract ext-2.2
+  tags: config
+  command: unzip /tmp/ext-2.2.zip -d /var/lib/oozie/
+  when: not ext2.stat.exists
+
 - name: initialize database
+  tags: init
   command: service oozie init
   when: destroy_data
   run_once: true
 
-- name: start services 
+- name: start services
   tags: service
-  command: service oozie start
+  service: name=oozie state=restarted enabled=yes

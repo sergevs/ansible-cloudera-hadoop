@@ -1,39 +1,44 @@
 - name: install postgresql server and jdbc
   tags: package
-  yum:  name=postgresql-server state=latest
+  yum:  name=postgresql{{ postgres_version|default('')|replace('.', '') }}-server state=latest
 
 - name: destroy data and init data and init database
+  tags: init
   shell: "{{ item }}"
   with_items:
-  - service postgresql stop
-  - rm -rf /var/lib/pgsql/data/*
-  - service postgresql initdb
-  - chkconfig postgresql on
+  - service postgresql{% if postgres_version %}-{{ postgres_version }} {% endif %} stop
+  - rm -rf /var/lib/pgsql/{{ postgres_version|default('') }}/data/*
+  - service postgresql{% if postgres_version %}-{{ postgres_version }}{% endif %} initdb
+  - chkconfig postgresql{% if postgres_version %}-{{ postgres_version }}{% endif %} on
   when: destroy_data
 
 - name: install configuration files
   tags: config
-  copy: src={{ item }} dest=/var/lib/pgsql/data/{{ item }} owner=postgres group=postgres
+  copy: src={{ item }} dest=/var/lib/pgsql/{{ postgres_version|default('') }}/data/{{ item }} owner=postgres group=postgres
   with_items:
   - postgresql.conf
   - pg_hba.conf
 
 - name: start services
   tags: service
-  command: service postgresql start
+  service: name=postgresql{% if postgres_version %}-{{ postgres_version }}{% endif %} state=restarted enabled=yes
 
 - name: set postgres password
+  tags: init
   command: sudo -Hu postgres psql -c "alter user postgres with password '{{ postgres_password }}';"
   when: destroy_data
 
 - name: install userdb sql
+  tags: init
   template: src=userdb.sql.j2 dest=/tmp/userdb.sql
   when: user_database is defined
 
 - name: create userdb
+  tags: init
   command: sudo -Hu postgres psql -f /tmp/userdb.sql
   when: user_database is defined and destroy_data
 
 - name: remove userdb sql
+  tags: init
   command: rm -f /tmp/userdb.sql
   when: user_database is defined

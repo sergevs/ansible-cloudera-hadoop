@@ -2,15 +2,15 @@ IMPALA_CATALOG_SERVICE_HOST={{ groups['impala-store-catalog'][0] }}
 IMPALA_STATE_STORE_HOST={{ groups['impala-store-catalog'][0] }}
 IMPALA_STATE_STORE_PORT=24000
 IMPALA_BACKEND_PORT=22000
-IMPALA_LOG_DIR=/var/log/impala
+IMPALA_LOG_DIR={{ log_folder }}/impala
 
-IMPALA_CATALOG_ARGS=" -log_dir=${IMPALA_LOG_DIR} "
-IMPALA_STATE_STORE_ARGS=" -log_dir=${IMPALA_LOG_DIR} -state_store_port=${IMPALA_STATE_STORE_PORT}"
+IMPALA_CATALOG_ARGS=" -log_dir=${IMPALA_LOG_DIR} {{impala_catalog_args|default('')}}"
+IMPALA_STATE_STORE_ARGS=" -log_dir=${IMPALA_LOG_DIR} -state_store_port=${IMPALA_STATE_STORE_PORT} {{impala_state_store_args|default('')}}"
 IMPALA_SERVER_ARGS=" \
     -log_dir=${IMPALA_LOG_DIR} \
     -catalog_service_host=${IMPALA_CATALOG_SERVICE_HOST} \
     -state_store_port=${IMPALA_STATE_STORE_PORT} \
-    -use_statestore \
+    -use_statestore {{impala_server_args|default('')}} \
     -state_store_host=${IMPALA_STATE_STORE_HOST} \
     -be_port=${IMPALA_BACKEND_PORT}"
 
