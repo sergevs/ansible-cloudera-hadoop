@@ -139,15 +139,15 @@
 
 - name: Deploy snmp monitoring
   tags: snmp
-  hosts: monitoring
+  hosts: java
   roles:
-    - snmp
+    - { role: snmp, when: enable_snmp }
 
 - name: Deploy syslog-ng monitoring
-  tags: syslog-ng
-  hosts: monitoring
+  tags: syslog
+  hosts: java
   roles:
-    - syslog-ng
+    - { role: syslog-ng, when: enable_syslog }
 
 - name: cluster
   tags: cluster

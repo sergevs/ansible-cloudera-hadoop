@@ -217,6 +217,38 @@
   </service>
 {% endfor %}
 
+{% if enable_snmp %}
+{% for item in groups['java'] %}
+  <service id="snmp" host="{{ item }}"
+            start="service subagent-shell start &gt; /dev/null 2&gt; /dev/null"
+            stop="service subagent-shell stop &gt; /dev/null 2&gt; /dev/null"
+            status="service subagent-shell status &gt; /dev/null">
+  </service>
+{% endfor %}
+{% endif %}
+
+{% if enable_syslog %}
+{% for item in groups['java'] %}
+  <service id="syslog" host="{{ item }}"
+            start="service syslog-ng reload &gt; /dev/null 2&gt; /dev/null"
+            status="service syslog-ng status &gt; /dev/null">
+  </service>
+{% endfor %}
+{% endif %}
+
+  <group name="monitoring">
+{% if enable_snmp %}
+{% for item in groups['java'] %}
+    <service id="snmp" host="{{ item }}"/>
+{% endfor %}
+{% endif %}
+{% if enable_syslog %}
+{% for item in groups['java'] %}
+    <service id="syslog" host="{{ item }}"/>
+{% endfor %}
+{% endif %}
+  </group>
+
   <group name="hdfs">
 {% for item in groups['namenodes'] %}
     <service id="hdfs-namenode" host="{{ item }}"/>

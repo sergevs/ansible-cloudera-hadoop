@@ -1,5 +1,0 @@
-# set true to use syslog-ng monitoring
-use_syslog_ng: true
-
-# set true to use snmp-subagent monitoring
-use_snmp_subagent: true

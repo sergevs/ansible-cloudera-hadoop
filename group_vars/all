@@ -20,6 +20,12 @@ destroy_data: True
 # zookeeper data directory
 zookeeper_data_dir: '/var/lib/zookeeper'
 
+# snmp monitoring, change to True to enable
+enable_snmp: False
+
+# syslog monitoring, change to True to enable
+enable_syslog: False
+
 # postgresql version
 postgres_version: ""
 

@@ -62,5 +62,3 @@ hue
 hadoop
 zookeepernodes
 
-[monitoring:children]
-java
