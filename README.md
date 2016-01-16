@@ -83,10 +83,10 @@ Playbook optionaly provides syslog-ng configuration and snmp-subagent configurat
 
 To use syslog-ng:
 
-* set variable **use_syslog_ng**  to true;
+* set variable **enable_syslog**  to true;
 * set variable **syslog_ng_destination** to existing syslog-ng destination(default value is **d_logcollector_throttled**).
 
-To use snmp set **use_snmp_subagent** to true and put following packages to repository:
+To use snmp set **enable_snmp** to true and put following packages to repository:
 
 * [net-snmp-subagent-shell](https://github.com/sergevs/net-snmp-subagent-shell)
 * [hadoop-monitoring-utility](https://github.com/go1dshtein/hadoop-monitoring-utility)
