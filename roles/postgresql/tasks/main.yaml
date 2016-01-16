@@ -9,7 +9,6 @@
   - service postgresql{% if postgres_version %}-{{ postgres_version }} {% endif %} stop
   - rm -rf /var/lib/pgsql/{{ postgres_version|default('') }}/data/*
   - service postgresql{% if postgres_version %}-{{ postgres_version }}{% endif %} initdb
-  - chkconfig postgresql{% if postgres_version %}-{{ postgres_version }}{% endif %} on
   when: destroy_data
 
 - name: install configuration files
