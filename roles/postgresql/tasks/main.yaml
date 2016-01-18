@@ -41,3 +41,7 @@
   tags: init
   command: rm -f /tmp/userdb.sql
   when: user_database is defined
+
+- name: execute user sql script
+  shell: echo "{{ postgres_script }}" | sudo -Hu postgres psql
+  when: postgres_script is defined
