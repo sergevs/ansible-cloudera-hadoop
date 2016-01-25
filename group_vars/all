@@ -33,10 +33,13 @@ postgres_version: ""
 #
 # postgres administrative account password
 postgres_password: postgres
+
 # metastore database password
 hiveuser_password: mypassword
+
 # oozie database password
 oozie_password: theoozie
+
 # hue database password
 hue_password: thehue
 
@@ -44,5 +47,9 @@ hue_password: thehue
 # if specified, it will be created in postgres and hue will be configured to use it
 # uncomment the next line if a user database is required to setup
 #user_database: userdb
+
 # a password for user database. username will be userdb_user
-userdb_password: myfavoritepassword
+#userdb_password: myfavoritepassword
+
+# a custom sql 
+#postgres_script: |
