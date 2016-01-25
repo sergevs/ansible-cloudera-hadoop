@@ -16,6 +16,16 @@
   file: dest={{ item }} owner=hdfs group=hdfs state=directory
   with_items: "{{ dfs_datanode_data_dir.replace('file://','').split(',') }}"
 
+- name: create yarn local directories
+#  tags: init
+  file: dest={{ item }} owner=yarn group=hadoop state=directory
+  with_items: "{{ yarn_nodemanager_local_dirs.replace('file://','').split(',') }}"
+
+- name: create yarn log directories
+#  tags: init
+  file: dest={{ item }} owner=yarn group=hadoop state=directory
+  with_items: "{{ yarn_nodemanager_log_dirs.replace('file://','').split(',') }}"
+
 - name: install default configurations
   tags: config
   template: src=default/{{ item }}.j2 dest=/etc/default/{{ item }}

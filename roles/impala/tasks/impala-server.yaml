@@ -9,7 +9,6 @@
   yum:  name={{ item }} state=latest
   with_items:
     - impala-shell
-  when: ansible_hostname == groups['datanodes'][0]
 
 - name: create configuration directory
   tags: config
@@ -26,6 +25,10 @@
     - hive-site.xml
     - core-site.xml
     - hdfs-site.xml
+
+- name: install template configuration for hive
+  tags: config
+  template: src=hive-site.xml.j2 dest=/etc/hive/conf/hive-site.xml
 
 - name: install default configurations
   tags: config
@@ -51,3 +54,11 @@
   tags: test
   command: impala-shell -u hdfs -d default -q 'create external table ansible_test_table ( id int ) location "/tmp/ansible_test_table"; drop table ansible_test_table;'
   when: ansible_hostname == groups['datanodes'][0]
+
+- name: create hdfs dir
+  tags: config
+  command: sudo -u hdfs hdfs dfs {{ item }}
+  with_items:
+    - -mkdir -p /user/impala
+    - '-chown impala:hadoop /user/impala'
+    - -chmod 1777 /user/impala

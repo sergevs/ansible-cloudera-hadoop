@@ -10,6 +10,10 @@
   tags: config
   file: path={{ etc_folder }}/oozie state=directory
 
+- name: create log directory
+  tags: config
+  file: path={{ log_folder }}/oozie state=directory owner=oozie group=oozie mode=755
+
 - name: setup alternatives link
   tags: config
   alternatives: name=oozie-conf link=/etc/oozie/conf path={{ etc_folder }}/oozie
