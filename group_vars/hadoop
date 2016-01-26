@@ -19,5 +19,6 @@ dfs_journalnode_edits_dir: '/var/lib/hadoop-hdfs/cache/hdfs/dfs/journal'
 # impala server additional arguments
 impala_server_args: ""
 
+# yarn directories. A comma seperated lists local to yarn instances
 yarn_nodemanager_local_dirs: 'file:///var/lib/hadoop-yarn/cache/${user.name}/nm-local-dir'
 yarn_nodemanager_log_dirs: 'file:///var/log/hadoop-yarn/containers'
