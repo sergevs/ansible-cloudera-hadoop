@@ -63,6 +63,14 @@
   when: destroy_data
   run_once: true
 
+- name: copy cert
+  tags: init
+  shell: '{{item}}'
+  with_items:
+   - openssl req -nodes -newkey rsa:2048 -keyout /etc/hue/hue.key -out /etc/hue/hue.csr -subj "/O=Hadoop/OU=hue/CN=hue/emailAddress=adm@it.xx"
+   - openssl x509 -req -days 3650 -in /etc/hue/hue.csr -signkey /etc/hue/hue.key -out /etc/hue/conf/hue.crt
+   - cat /etc/hue/conf/hue.crt /etc/hue/hue.key > /etc/hue/conf/hue.pem
+
 - name: start services
   tags: service
   service: name={{ item }} state=restarted enabled=yes

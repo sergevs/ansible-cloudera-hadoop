@@ -38,6 +38,7 @@
   run_once: true
 
 - name: init zookeeper
+  tags: init
   command: solrctl init
   run_once: true
 

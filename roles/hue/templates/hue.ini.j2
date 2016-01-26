@@ -74,6 +74,9 @@
   # Execute this script to produce the SSL password. This will be used when `ssl_password` is not set.
   ## ssl_password_script=
 
+  ssl_certificate=/etc/hue/conf/hue.pem
+  ssl_private_key=/etc/hue/conf/hue.pem
+
   # List of allowed and disallowed ciphers in cipher list format.
   # See http://www.openssl.org/docs/apps/ciphers.html for more information on cipher list format.
   ## ssl_cipher_list=DEFAULT:!aNULL:!eNULL:!LOW:!EXPORT:!SSLv2
@@ -197,10 +200,10 @@
     # - libopenid.backend.OpenIDBackend
     # - liboauth.backend.OAuthBackend
     #     (Support Twitter, Facebook, Google+ and Linkedin
-    ## backend=desktop.auth.backend.AllowFirstUserDjangoBackend
+    backend=desktop.auth.backend.PamBackend
 
     # The service to use when querying PAM.
-    ## pam_service=login
+    pam_service=login
 
     # When using the desktop.auth.backend.RemoteUserDjangoBackend, this sets
     # the normalized name of the header that contains the remote user.

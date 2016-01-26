@@ -21,6 +21,10 @@
     - core-site.xml
     - hdfs-site.xml
 
+- name: install template configuration for hive
+  tags: config
+  template: src=hive-site.xml.j2 dest=/etc/hive/conf/hive-site.xml
+
 - name: install default configurations
   tags: config
   template: src={{ item }}.j2 dest=/etc/default/{{ item }}
