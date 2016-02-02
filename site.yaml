@@ -87,6 +87,13 @@
   roles:
     - hivemetastore
 
+- name: Deploy hive client on datanodes
+  tags: hive
+  hosts: datanodes
+  tasks:
+    - include: roles/hivemetastore/tasks/hive-client.yaml
+      when: groups['hivemetastore']|count == 1
+
 - name: Deploy impala state-store and catalog
   tags: impala
   hosts: impala-store-catalog
