@@ -1,10 +1,9 @@
 # oozie server heapsize
 oozie_heapsize: 1024
 
-# oozie launcher pool
-oozie_launcher:
-#  maxapps: 30
-#  weight: 1.0
+# oozie launcher pool ( fair-scheduler configuration )
+oozie_launcher_maxapps: 10
+oozie_launcher_weight: 1.0
 
 # additional oozie plugins
 oozie_ext_classes: []

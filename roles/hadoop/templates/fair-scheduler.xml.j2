@@ -20,17 +20,11 @@
 <allocations>
 
   {% if groups['oozie']|count > 0 and 'oozie' in group_names %}
-  <!-- oozie launcher poll configuration -->
-    {% if oozie_launcher %}
+  <!-- oozie launcher pool configuration -->
   <pool name="launcher">
-    <maxRunningApps>{{oozie_launcher.maxapps|default('10')}}</maxRunningApps>
-    <weight>{{oozie_launcher.weight|default('1.0')}}</weight>
+    <maxRunningApps>{{ oozie_launcher_maxapps }}</maxRunningApps>
+    <weight>{{ oozie_launcher_weight }}</weight>
   </pool>
-    {% else %}
-  <pool name="launcher">
-    <maxRunningApps>10</maxRunningApps>
-  </pool>
-    {% endif %}
   {% endif %}
 
   <poolMaxJobsDefault>20</poolMaxJobsDefault>

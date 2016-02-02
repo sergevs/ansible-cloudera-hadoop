@@ -5,6 +5,11 @@ journalnode_heapsize: 1000
 zkfc_heapsize: 1000
 nodemanager_heapsize: 2048
 
+# http://www.cloudera.com/documentation/enterprise/latest/topics/cdh_ig_hive_install.html?scroll=concept_alp_4kl_3q_unique_1
+hiveserver2_heapsize: 1024
+hivemetastore_heapsize: 2048
+hivecli_heapsize: 1024
+
 # hadoop directories
 #
 # name nodes directory
@@ -16,6 +21,9 @@ dfs_datanode_data_dir: 'file:///var/lib/hadoop-hdfs/cache/hdfs/dfs/data'
 # journal nodes directory
 dfs_journalnode_edits_dir: '/var/lib/hadoop-hdfs/cache/hdfs/dfs/journal'
 
+# default replication factor
+dfs_replication: 3
+
 # impala server additional arguments
 impala_server_args: ""
 
@@ -25,3 +33,6 @@ yarn_nodemanager_log_dirs: 'file:///var/log/hadoop-yarn/containers'
 
 # yarn memory settings in Mb
 yarn_nodemanager_resource_memory: 4096
+
+# yarn cpu-vcores
+yarn_nodemanager_resource_cpu: 10
