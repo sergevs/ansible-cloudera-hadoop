@@ -1,0 +1,33 @@
+- name: install packages
+  tags: package
+  yum:  name={{ item }} state=latest
+  with_items:
+    - hive
+
+- name: create configuration directory
+  tags: config
+  file: path={{ etc_folder }}/hive state=directory
+
+- name: setup alternatives link
+  tags: config
+  alternatives: name=hive-conf link=/etc/hive/conf path={{ etc_folder }}/hive
+
+- name: install template configurations
+  tags: config
+  template: src={{ item }}.j2 dest={{ etc_folder }}/hive/{{ item }}
+  with_items:
+    - hive-site.xml
+    - hive-env.sh
+
+- name: install files configurations
+  tags: config
+  copy: src={{ item }} dest={{ etc_folder }}/hive/{{ item }}
+  with_items:
+    - hive-exec-log4j.properties
+    - hive-log4j.properties
+
+- name: install default configurations
+  tags: config
+  copy: src=default/{{ item }} dest=/etc/default/{{ item }}
+  with_items:
+    - hadoop-0.20-mapreduce
