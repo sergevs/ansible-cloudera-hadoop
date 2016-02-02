@@ -17,7 +17,10 @@
 
 - name: install template configurations
   tags: config
-  template: src=hive-site.xml.j2 dest={{ etc_folder }}/hive/hive-site.xml
+  template: src={{ item }}.j2 dest={{ etc_folder }}/hive/{{ item }}
+  with_items:
+    - hive-site.xml
+    - hive-env.sh
 
 - name: install files configurations
   tags: config

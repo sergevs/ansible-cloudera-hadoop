@@ -82,6 +82,9 @@
   when: destroy_data
   run_once: true
 
+- name: allow hue to read passwd for authentication
+  command: setfacl -m user:hue:r-- /etc/shadow
+
 - name: start services
   tags: service
   service: name={{ item }} state=restarted enabled=yes
