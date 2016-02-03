@@ -24,6 +24,9 @@ dfs_journalnode_edits_dir: '/var/lib/hadoop-hdfs/cache/hdfs/dfs/journal'
 # default replication factor
 dfs_replication: 3
 
+# umask for hdfs, the valued MUST be quoted
+fs_permissions_umask: '022'
+
 # impala server additional arguments
 impala_server_args: ""
 
