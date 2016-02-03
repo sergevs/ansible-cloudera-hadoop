@@ -164,6 +164,10 @@
             status="service hadoop-httpfs status &gt; /dev/null">
   </service>
 
+  <service id="hue-setacl" host="{{ item }}"
+            start="setfacl -m user:hue:r-- /etc/shadow &gt; /dev/null 2&gt; /dev/null">
+  </service>
+
   <service id="hue" host="{{ item }}"
             start="service hue start &gt; /dev/null 2&gt; /dev/null"
             stop="service hue stop &gt; /dev/null 2&gt; /dev/null"
