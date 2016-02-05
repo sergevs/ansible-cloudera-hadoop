@@ -1,0 +1,31 @@
+- name: get examples name
+  shell: rpm -ql oozie-client | grep oozie-examples
+  register: o
+
+- name: extract examples
+  unarchive: src={{ o.stdout_lines[0] }} dest=/tmp copy=no
+
+- name: put examples to hdfs
+  command: sudo -Hi -u hdfs hdfs dfs -put -f /tmp/examples examples
+
+- name: amend example configuration
+  lineinfile: dest=/tmp/examples/apps/map-reduce/job.properties regexp='^nameNode=' line="nameNode={% if groups['namenodes']|count > 1 %}hdfs://{{ cluster_name }}{% else %}hdfs://{{ groups['namenodes'][0] }}:8020{% endif %}"
+
+- name: run map-reduce job
+  command: sudo -Hi -u hdfs oozie job -oozie http://localhost:11000/oozie -config /tmp/examples/apps/map-reduce/job.properties -run
+  register: j
+
+- name: check status
+  shell: oozie job -oozie http://localhost:11000/oozie -info {{ j.stdout_lines[0].split()[1] }} | awk '/^Status/{ print $3 }'
+  register: s
+  until: s.stdout == 'SUCCEEDED'
+  delay: 5
+  retries: 12
+
+- debug: msg="Job status is {{ s.stdout }}"
+
+- name: clean up examples
+  file: path=/tmp/examples state=absent
+
+- name: remove examples from hdfs
+  command: sudo -Hi -u hdfs hdfs dfs -rm -r examples

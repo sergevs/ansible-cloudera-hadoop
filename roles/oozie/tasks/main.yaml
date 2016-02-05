@@ -65,7 +65,9 @@
   run_once: true
 
 - name: install shared libraries to hdfs
-  tags: config
+  tags: 
+    - config
+    - oozie-setup 
   command: oozie-setup sharelib create -fs {% if groups['namenodes']|count > 1 %} hdfs://{{ cluster_name }} {% else %} hdfs://{{ groups['namenodes'][0] }}:8020 {% endif %} -locallib /usr/lib/oozie/oozie-sharelib-yarn
   run_once: true
 
@@ -81,10 +83,6 @@
   command: psql -h {{ groups['postgresql'][0] }} --username postgres -f /tmp/oozie.sql
   when: destroy_data
   run_once: true
-
-- name: check postgresql connection
-  tags: test
-  command: psql -h {{ groups['postgresql'][0] }} -U oozie -d oozie -c 'select 1' -w
 
 - name: remove sql and .pgpass files
   command: rm -f /tmp/oozie.sql /root/.pgpass
@@ -107,3 +105,5 @@
 - name: start services
   tags: service
   service: name=oozie state=restarted enabled=yes
+
+- include: oozie-test.yaml tags=test
