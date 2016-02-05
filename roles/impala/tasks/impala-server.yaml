@@ -43,7 +43,6 @@
     - impala-server
 
 - name: wait
-  tags: test
   command: sleep 30
 
 - name: test impala
