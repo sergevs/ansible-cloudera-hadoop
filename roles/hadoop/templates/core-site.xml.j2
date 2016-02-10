@@ -12,6 +12,15 @@
 {% endif %}
   </property>
 
+{% if groups['namenodes']|count > 1 %}
+  <property>
+    <name>ha.zookeeper.quorum</name>
+    <value>{% for item in groups['zookeepernodes'] -%}
+              {{ item }}:2181{% if not loop.last %},{% endif %}
+           {%- endfor %}</value>
+  </property>
+{% endif %}
+
   <property>
     <name>dfs.permissions.superusergroup</name>
     <value>hadoop</value>
