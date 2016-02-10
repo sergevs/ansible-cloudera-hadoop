@@ -9,6 +9,13 @@
     <value>{{ cluster_name }}</value>
   </property>
 
+  <property>
+    <name>dfs.ha.namenodes.{{ cluster_name }}</name>
+    <value>{% for item in groups['namenodes'] -%}
+              {{ item }}{% if not loop.last %},{% endif %}
+           {%- endfor %}</value>
+  </property>
+
 {% for item in groups['namenodes'] %}
   <property>
     <name>dfs.namenode.rpc-address.{{ cluster_name }}.{{ item }}</name>
@@ -51,13 +58,6 @@
   <property>
     <name>dfs.ha.automatic-failover.enabled</name>
     <value>true</value>
-  </property>
-
-  <property>
-    <name>ha.zookeeper.quorum</name>
-    <value>{% for item in groups['zookeepernodes'] -%}
-                 {{ item }}:2181{% if not loop.last %},{% endif %}
-           {%- endfor %}</value>
   </property>
 {% endif %}
 
