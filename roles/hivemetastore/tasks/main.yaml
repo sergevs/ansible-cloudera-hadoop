@@ -15,6 +15,10 @@
   tags: config
   alternatives: name=hive-conf link=/etc/hive/conf path={{ etc_folder }}/hive
 
+- name: set limits for hive user
+  tags: config
+  copy: src=hive.limits.conf dest=/etc/security/limits.d/hive.conf
+
 - name: install template configurations
   tags: config
   template: src={{ item }}.j2 dest={{ etc_folder }}/hive/{{ item }}
