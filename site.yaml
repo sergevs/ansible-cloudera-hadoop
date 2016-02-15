@@ -163,3 +163,8 @@
     - debug: msg="{{ lookup('pipe', 'echo; clinit -S workdir/services.xml --nocolors tree;echo =')}}"
       run_once: true
 
+- name: dashboard
+  tags: dashboard
+  hosts: dashboard
+  roles:
+    - dashboard

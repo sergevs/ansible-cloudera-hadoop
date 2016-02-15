@@ -26,6 +26,10 @@ enable_snmp: False
 # syslog monitoring, change to True to enable
 enable_syslog: False
 
+# enable dashboard web page configuration: a single page to access all web interfaces
+enable_dashboard: True
+dashboard_folder: /var/www/html/dashboard
+
 # postgresql version
 postgres_version: ""
 

@@ -23,5 +23,12 @@
          {{ item }}:2181{% if not loop.last %},{% endif %}
          {%- endfor %}</value>
 </property>
+{% if groups['dashboard']|count > 0 %}
+
+<property>
+  <name>hbase.http.filter.xframeoptions.mode</name>
+  <value>ALLOWALL</value>
+</property>
+{% endif %}
 
 </configuration>

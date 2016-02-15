@@ -44,6 +44,9 @@
 # optional
 [hue]
 
+# optional
+[dashboard]
+
 # please do not edit the groups below
 [hadoop:children]
 namenodes
