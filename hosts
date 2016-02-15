@@ -44,8 +44,10 @@
 # optional
 [hue]
 
-# optional
-[dashboard]
+# optional. comment this out completely or fill in a host into [dashboard]
+#[dashboard]
+[dashboard:children]
+namenodes
 
 # please do not edit the groups below
 [hadoop:children]
