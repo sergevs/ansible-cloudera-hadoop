@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+  <head> <title>Dashboard</title>
+    <link href='bootstrap.min.css' rel='stylesheet' media='screen'>
+    <link href="jasny-bootstrap.min.css" rel="stylesheet" media="screen">
+
+    <style>
+html, body, .container {
+  height: 100%;
+  width: 100%;
+}
+.dash-button {
+  background-color: rgb(98, 128, 93);
+}
+.navmenu-fixed-left {
+  position: absolute;
+  left: 0px;
+}
+
+iframe {
+  z-index: 2;
+}
+
+.navbar-toggle {
+  float: left;
+  margin-left: 15px;
+}
+
+.navmenu {
+  z-index: 1;
+}
+
+.canvas {
+  position: relative;
+  left: 0;
+  z-index: 2;
+  min-height: 100%;
+  padding: 50px 0 0 0;
+  background: #fff;
+}
+
+@media (min-width: 0) {
+  .navbar-toggle {
+    display: block; /* force showing the toggle */
+  }
+@media (min-width: 992px) {
+  body {
+    padding: 0;
+  }
+  .navbar {
+    right: auto;
+    background: none;
+    border: none;
+  }
+  .canvas {
+    padding: 0;
+  }
+}
+
+    </style>
+  </head>
+<body>
+<div class="navmenu navmenu-default navmenu-fixed-left">
+  <a class="navmenu-brand" href="about:blank" target="container">Hadoop dashboard</a>
+  <ul class="nav navmenu-nav">
+{# list of services. Includes:
+   - service display name
+   - service hosts group from inventory
+   - service port
+   - service additional URL (used for eozie only 
+#}
+{% set services = [
+     ('HDFS', 'http', 'namenodes', '50070', '', 'container')
+     ,('Resource Manager', 'http', 'yarnresourcemanager', '8088', '', 'container')
+     ,('Node Manager', 'http', 'datanodes', '8042', '', 'container')
+     ,('Job history', 'http', 'yarnresourcemanager', '19888', '', 'container')
+     ,('Oozie', 'http', 'oozie', '11000', 'oozie', 'container')
+     ,('Catalog', 'http', 'impala-store-catalog', '25020', '', 'external')
+     ,('StateStore', 'http', 'impala-store-catalog', '25010', '', 'external')
+     ,('Impala', 'http', 'datanodes', '25000', '', 'external')
+     ,('Spark', 'http', 'spark', '18080', '', 'external')
+     ,('HBase', 'http', 'hbasemaster', '60010', 'master-status', 'container')
+     ,('Solr', 'http', 'solr', '8983', '/solr/', 'external')
+     ,('Hue', 'https', 'hue', '8888', '/about/', 'external')
+   ] %}
+{% for s in services %}
+  {% set sname, sproto, sgroup, sport, surl, starget = s %}
+  {% if groups[sgroup] | count > 1 %}
+    <li class="dropdown">
+      <a class="dropdown-toggle" data-toggle="dropdown" href="#">{{sname}}<b class="caret"></b></a>
+      <ul class="dropdown-menu navmenu-nav">
+        {% for shost in groups[sgroup] %}
+        <li><a href="{{sproto}}://{{shost}}:{{sport}}/{{surl}}" target="{{starget}}">{{shost}}</a></li>
+        {% endfor %}
+      </ul>
+    </li>
+  {% endif %}
+  {% if groups[sgroup] | count == 1 %}
+    <li class="">
+      <a class="" href="{{sproto}}://{{groups[sgroup][0]}}:{{sport}}/{{surl}}" target="{{starget}}">{{sname}} ({{groups[sgroup][0]}})</a>
+    </li>
+  {% endif %}
+{% endfor %}
+  </ul>
+</div>
+
+<div class='container canvas' >
+   <iframe id="ifr" name='container' style="display:block;width:100%;height:100%" frameborder=0 src="about:blank">
+
+   </iframe>
+
+   <div class="navbar navbar-default navbar-fixed-top">
+      <button type="button" class="navbar-toggle dash-button" data-toggle="offcanvas" data-recalc="false" data-target=".navmenu" data-canvas=".canvas">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+   </div>
+</div>
+    <script src="jquery.min.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <script src="jasny-bootstrap.min.js"></script>
+<script type="text/javascript">
+    $('.dropdown-menu ').click(function(e) {
+        e.stopPropagation();
+    });
+    $('.dash-button').click()
+                     .on('click', function (e) {$(this).tooltip('destroy');})
+                     .tooltip({title:"Click me to open/close dashboard menu", placement:"bottom", trigger:"manual"})
+                     .tooltip('show');
+
+</script>
+</body></html>

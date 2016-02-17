@@ -1,0 +1,38 @@
+- name: ensure httpd is in place for dashboard
+  yum: name=httpd state=present
+
+- name: create dashboard directory
+  file: path={{ dashboard_folder }} state=directory
+
+- name: get bootstrap css
+  local_action: get_url url=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css dest={{ inventory_dir }}/workdir/bootstrap.min.css
+  run_once: true
+
+- name: get bootstrap js
+  local_action: get_url url=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js dest={{ inventory_dir }}/workdir/bootstrap.min.js
+  run_once: true
+
+- name: get additional jasny js
+  local_action: get_url url=http://cdnjs.cloudflare.com/ajax/libs/jasny-bootstrap/3.1.3/js/jasny-bootstrap.min.js dest={{ inventory_dir }}/workdir/jasny-bootstrap.min.js
+  run_once: true
+
+- name: get additional jasny css
+  local_action: get_url url=http://cdnjs.cloudflare.com/ajax/libs/jasny-bootstrap/3.1.3/css/jasny-bootstrap.min.css dest={{ inventory_dir }}/workdir/jasny-bootstrap.min.css
+  run_once: true
+
+- name: get jquery
+  local_action: get_url url=http://code.jquery.com/jquery-1.12.0.min.js dest={{ inventory_dir }}/workdir/jquery.min.js
+  run_once: true
+
+- name: create dashboard page
+  template: src=dashboard.j2 dest={{ dashboard_folder }}/index.html
+
+- name: copy static js and css files 
+  copy: src={{ item }} dest={{ dashboard_folder }}/{{ item|basename }}
+  with_fileglob:
+    - "{{ inventory_dir }}/workdir/jquery.min.js"
+    - "{{ inventory_dir }}/workdir/jasny-bootstrap.min.css"
+    - "{{ inventory_dir }}/workdir/jasny-bootstrap.min.js"
+    - "{{ inventory_dir }}/workdir/bootstrap.min.js"
+    - "{{ inventory_dir }}/workdir/bootstrap.min.css"
+    

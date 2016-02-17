@@ -26,6 +26,9 @@ enable_snmp: False
 # syslog monitoring, change to True to enable
 enable_syslog: False
 
+# this is a directory for 5 static files forming a dashboard
+dashboard_folder: /var/www/html/dashboard
+
 # postgresql version
 postgres_version: ""
 
