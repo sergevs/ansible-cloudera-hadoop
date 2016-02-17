@@ -51,6 +51,7 @@ Service configuration performed using the hosts file. The empty [hosts](https://
 * **[spark]**: configures hosts to submit _spark_ jobs. _spark history server_ will be configured on the first host in the group.
 * **[oozie]**: configures _oozie_ service. **[postgresql]** host is required for data storage.
 * **[hue]**: configures _hue_ services. **[oozie]** host is required to submit jobs. **[postgresql]** is required for data storage.
+* **[dashboard]**: places a simple static dashboard with links to all other services on mentioned hosts. See [dashboard](#dashboard) below.
 
 #### Variables parameters:
 Please see [group_vars](https://github.com/sergevs/ansible-cloudera-hadoop/tree/master/group_vars)
@@ -90,6 +91,13 @@ To use snmp set **enable_snmp** to true and put following packages to repository
 
 * [net-snmp-subagent-shell](https://github.com/sergevs/net-snmp-subagent-shell)
 * [hadoop-monitoring-utility](https://github.com/go1dshtein/hadoop-monitoring-utility)
+
+# Dashboard
+![dashboard](dashboard.demo.png "Dashboard Screenshot")
+
+The dashboard consists of 5 static files and is placed into ```/var/html/dashboard``` by default.
+Most of services should be available in a frame on the right. But Solr and some others set X-Frame-Options header
+which denies embedding them into an iframe. If a service opens a white page for you - try opening it in a new tab with middle mouse button.
 
 # Requirements
 [Ansible](http://www.ansible.com) is required :). Please read [official documentation](http://docs.ansible.com/ansible/intro_installation.html#latest-release-via-yum) to install it.

@@ -56,6 +56,7 @@ iframe {
     padding: 0;
   }
 }
+
     </style>
   </head>
 <body>
@@ -69,33 +70,34 @@ iframe {
    - service additional URL (used for eozie only 
 #}
 {% set services = [
-     ('HDFS', 'namenodes', '50070', '')
-     ,('Impala', 'datanodes', '25000', '')
-     ,('StateStore', 'impala-store-catalog', '25010', '')
-     ,('Catalog', 'impala-store-catalog', '25020', '')
-     ,('Resource Manager', 'yarnresourcemanager', '8088', '')
-     ,('Node Manager', 'datanodes', '8042', '')
-     ,('Job history', 'yarnresourcemanager', '19888', '')
-     ,('Oozie', 'oozie', '11000', 'oozie')
-     ,('HBase', 'hbasemaster', '60010', 'master-status')
-     ,('Solr', 'solr', '8983', '')
-     ,('Spark', 'spark', '18080', '')
+     ('HDFS', 'http', 'namenodes', '50070', '', 'container')
+     ,('Resource Manager', 'http', 'yarnresourcemanager', '8088', '', 'container')
+     ,('Node Manager', 'http', 'datanodes', '8042', '', 'container')
+     ,('Job history', 'http', 'yarnresourcemanager', '19888', '', 'container')
+     ,('Oozie', 'http', 'oozie', '11000', 'oozie', 'container')
+     ,('Catalog', 'http', 'impala-store-catalog', '25020', '', 'external')
+     ,('StateStore', 'http', 'impala-store-catalog', '25010', '', 'external')
+     ,('Impala', 'http', 'datanodes', '25000', '', 'external')
+     ,('Spark', 'http', 'spark', '18080', '', 'external')
+     ,('HBase', 'http', 'hbasemaster', '60010', 'master-status', 'container')
+     ,('Solr', 'http', 'solr', '8983', '/solr/', 'external')
+     ,('Hue', 'https', 'hue', '8888', '/about/', 'external')
    ] %}
 {% for s in services %}
-  {% set sname, sgroup, sport, surl = s %}
+  {% set sname, sproto, sgroup, sport, surl, starget = s %}
   {% if groups[sgroup] | count > 1 %}
     <li class="dropdown">
       <a class="dropdown-toggle" data-toggle="dropdown" href="#">{{sname}}<b class="caret"></b></a>
       <ul class="dropdown-menu navmenu-nav">
         {% for shost in groups[sgroup] %}
-        <li><a href="http://{{shost}}:{{sport}}/{{surl}}" target="container">{{shost}}</a></li>
+        <li><a href="{{sproto}}://{{shost}}:{{sport}}/{{surl}}" target="{{starget}}">{{shost}}</a></li>
         {% endfor %}
       </ul>
     </li>
   {% endif %}
   {% if groups[sgroup] | count == 1 %}
     <li class="">
-      <a class="" href="http://{{groups[sgroup][0]}}:{{sport}}/{{surl}}" target="container">{{sname}} ({{groups[sgroup][0]}})</a>
+      <a class="" href="{{sproto}}://{{groups[sgroup][0]}}:{{sport}}/{{surl}}" target="{{starget}}">{{sname}} ({{groups[sgroup][0]}})</a>
     </li>
   {% endif %}
 {% endfor %}
@@ -103,7 +105,7 @@ iframe {
 </div>
 
 <div class='container canvas' >
-   <iframe id="ifr" name='container' style="display:block;width:100%;height:100%" frameborder=0 src="initial.help.html">
+   <iframe id="ifr" name='container' style="display:block;width:100%;height:100%" frameborder=0 src="about:blank">
 
    </iframe>
 
