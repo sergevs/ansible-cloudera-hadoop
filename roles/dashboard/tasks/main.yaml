@@ -35,4 +35,7 @@
     - "{{ inventory_dir }}/workdir/jasny-bootstrap.min.js"
     - "{{ inventory_dir }}/workdir/bootstrap.min.js"
     - "{{ inventory_dir }}/workdir/bootstrap.min.css"
-    
+
+- name: start service
+  tags: service
+  service: name=httpd state=started enabled=yes 
