@@ -86,6 +86,9 @@
 - name: remove sql and .pgpass files
   command: rm -f /tmp/ahive.sql /root/.pgpass
 
+- name: add hive user to hadoop group
+  user: name=hive groups=hive,hadoop
+
 - name: start services
   tags: service
   service: name={{ item }} state=restarted enabled=yes
