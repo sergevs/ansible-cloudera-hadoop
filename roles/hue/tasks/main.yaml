@@ -82,6 +82,10 @@
   when: destroy_data
   run_once: true
 
+- name: fix /etc/init.d/hue for systemd
+  tags: patch
+  lineinfile: 'dest=/etc/init.d/hue regexp="^# pidfile:" line="# pidfile: /var/run/hue/supervisor.pid"'
+
 - name: start services
   tags: service
   service: name={{ item }} state=restarted enabled=yes

@@ -3,12 +3,11 @@
   yum:  name={{ item }} state=latest
   with_items:
     - impala-server
-
-- name: install impala-shell package
-  tags: packages
-  yum:  name={{ item }} state=latest
-  with_items:
     - impala-shell
+
+- name: fix impala-shell
+  tags: patch
+  lineinfile: dest=/usr/bin/impala-shell regexp="^PYTHON_EGG_CACHE=" line="export PYTHON_EGG_CACHE=/tmp/impala-shell-python-egg-cache-`whoami`"
 
 - name: create configuration directory
   tags: config
