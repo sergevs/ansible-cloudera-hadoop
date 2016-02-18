@@ -17,7 +17,6 @@ The playbook is composed according to [official cloudera guides](http://www.clou
 * **oozie**
 * **hue**
 * **postgresql**
-* **monitoring**
 
 The configuration is _very_ simple:
 
