@@ -35,3 +35,6 @@
   copy: src=default/{{ item }} dest=/etc/default/{{ item }}
   with_items:
     - hadoop-0.20-mapreduce
+
+- name: add group for hive user
+  user: name=hive groups=hive,hadoop
