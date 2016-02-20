@@ -20,7 +20,7 @@ The playbook is composed according to [official cloudera guides](http://www.clou
 
 The configuration is _very_ simple:
 
-It’s only required to place hostname(s) to the appropriate group in hosts file, and the required services will be setup.
+It’s only required to place hostname(s) to the appropriate group in [hosts](hosts) file, and the required services will be setup.
 
 The playbook contain all configuration files in roles directories. If you need to add or change any parameter you can edit
 the required configuration file which can be found in roles/_service_/[files|templates] directory.
