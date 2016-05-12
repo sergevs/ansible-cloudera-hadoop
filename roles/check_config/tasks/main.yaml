@@ -87,3 +87,8 @@
   when: groups['solr']|count > 0 and groups['zookeepernodes']|count < 1
   fail: msg="solr requires at least one zookeepernode, you have not configured any"
   run_once: true
+
+- name: check kafka prerequisites
+  when: groups['kafka']|count >  0 and groups['zookeepernodes']|count < 1
+  fail: msg="kafka requires at least one zookeepernode, you have not configured any"
+  run_once: true
