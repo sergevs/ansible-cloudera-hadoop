@@ -1,0 +1,6 @@
+log_dirs: /tmp/kafka-logs
+num_io_threads: 8
+log_retention_hours: 168
+auto_create_topics_enable: true
+controlled_shutdown_enable: true
+delete_topic_enable: true
