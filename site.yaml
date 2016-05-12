@@ -138,6 +138,12 @@
   roles:
     - oozie
 
+- name: Deploy kafka
+  tags: kafka
+  hosts: kafka
+  roles:
+    - kafka
+
 - name: Deploy Hue
   tags: hue
   hosts: hue
