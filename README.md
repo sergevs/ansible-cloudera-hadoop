@@ -15,6 +15,7 @@ The playbook is composed according to [official cloudera guides](http://www.clou
 * **solr**
 * **spark**
 * **oozie**
+* **kafka**
 * **hue**
 * **postgresql**
 
@@ -49,6 +50,7 @@ Service configuration performed using the hosts file. The empty [hosts](https://
 * **[solr]**: configures _solr_ service. at least 1 **[zookeepernodes]** host is required.
 * **[spark]**: configures hosts to submit _spark_ jobs. _spark history server_ will be configured on the first host in the group.
 * **[oozie]**: configures _oozie_ service. **[postgresql]** host is required for data storage.
+* **[kafka]**: configures _kafka-server_ service. at least 1 **[zookeepernodes]** host is required.
 * **[hue]**: configures _hue_ services. **[oozie]** host is required to submit jobs. **[postgresql]** is required for data storage.
 * **[dashboard]**: places a simple static dashboard with links to all other services on mentioned hosts. See [dashboard](#dashboard) below.
 
@@ -103,7 +105,7 @@ which denies embedding them into an iframe. If a service opens a white page for 
 
 OS version: Redhat/CentOS 6, 7
 
-Cloudera Hadoop version: 5.4, 5.5
+Cloudera Hadoop version: 5.4 - 5.7
 
 The required for Cloudera Hadoop repositories have to be properly configured on the target hosts.
 See also [official documentation](http://www.cloudera.com/content/www/en-us/documentation/enterprise/latest/topics/cdh_ig_yumrepo_local_create.html)
