@@ -42,6 +42,9 @@
 [oozie]
 
 # optional
+[kafka]
+
+# optional
 [hue]
 
 # optional. comment this out completely or fill in a host into [dashboard]
