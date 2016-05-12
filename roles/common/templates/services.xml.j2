@@ -299,13 +299,27 @@
   </group>
 {% endif %}
 
-
 {% if groups['hivemetastore']|count > 0 %}
-{% for item in groups['hivemetastore'] %}
   <group name="hive">
+{% for item in groups['hivemetastore'] %}
     <service id="hive-metastore" host="{{ item }}"/>
     <service id="hive-server2" host="{{ item }}"/>
-  </group>
 {% endfor %}
+  </group>
+{% endif %}
+
+{% if groups['kafka']|count > 0 %}
+  <group name="kafka">
+{% for item in groups['kafka'] %}
+  <service id="kafka-server" host="{{ item }}"
+           start="service kafka-server start &gt; /dev/null"
+           stop="service kafka-server stop &gt; /dev/null"
+           status="service kafka-server status &gt; /dev/null">
+{% for item in groups['zookeepernodes'] %}
+       <requires id="zookeeper-server" host="{{ item }}" strong="true"/>
+{% endfor %}
+  </service>
+{% endfor %}
+  </group>
 {% endif %}
 </services>
