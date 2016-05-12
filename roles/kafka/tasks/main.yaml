@@ -1,0 +1,81 @@
+- name: install packages
+  tags: packages
+  yum: name={{ item }} state=latest
+  with_items:
+    - kafka-server
+
+- name: create configuration directory
+  file: path=/etc/kafka/conf.{{ cluster_name }} state=directory
+
+- name: setup alternatives link
+  alternatives: name=kafka-conf link=/etc/kafka/conf path=/etc/kafka/conf.{{ cluster_name }}
+
+- name: install default configurations
+  tags: config
+  copy: src=default/{{ item }} dest=/etc/default/{{ item }}
+  with_items:
+    - kafka
+
+- name: install template configurations
+  tags: config
+  template: src={{ item }}.j2 dest=/etc/kafka/conf/{{ item }}
+  with_items:
+    - server.properties
+
+- name: install files configurations
+  tags: config
+  copy: src={{ item }} dest=/etc/kafka/conf/{{ item }}
+  with_items:
+    - connect-console-sink.properties
+    - connect-console-source.properties
+    - connect-distributed.properties
+    - connect-file-sink.properties
+    - connect-file-source.properties
+    - connect-log4j.properties
+    - connect-standalone.properties
+    - log4j.properties
+    - tools-log4j.properties
+
+- name: destroy data
+  tags: init
+  command: rm -rf {{ item }}
+  with_items: "{{ log_dirs.split(',') }}"
+  when: destroy_data
+
+- name: create kafka directories
+  tags: init
+  file: dest={{ item }} owner=kafka group=kafka state=directory
+  with_items: "{{ log_dirs.split(',') }}"
+
+- name: start services
+  tags: service
+  service: name={{ item }} state=restarted enabled=yes
+  with_items:
+    - kafka-server
+
+- name: test, create topic
+  tags: test
+  command: kafka-topics --zookeeper {{ groups['zookeepernodes'][0] }}:2181 --replication-factor {{ groups['kafka']|count }} --partitions 1 --create --topic test
+  run_once: true
+
+- name: test, create test message
+  tags: test
+  shell: echo 'test message' | kafka-console-producer --broker-list {{ ansible_hostname }}:9092 --topic test
+  run_once: true
+
+- name: test, read the message
+  tags: test
+  command: kafka-console-consumer --zookeeper {{ groups['zookeepernodes'][0] }}:2181 --max-messages 1 --topic test --from-beginning
+  run_once: true
+  register: msg
+
+- name: test, result
+  tags: test
+  debug: var=msg.stdout  
+  failed_when: msg.stdout.find('test message') < 0
+  run_once: true
+
+- name: test, delete topic
+  tags: test
+  command: kafka-topics --zookeeper {{ groups['zookeepernodes'][0] }}:2181 --delete --topic test
+  run_once: true
