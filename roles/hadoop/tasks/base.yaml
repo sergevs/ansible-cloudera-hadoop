@@ -1,0 +1,57 @@
+- name: install packages
+  tags: packages
+  yum: name={{ item }} state=latest
+  with_items:
+    - hadoop
+
+- name: create configuration directory
+  tags: config
+  file: path={{ etc_folder }}/hadoop state=directory
+
+- name: setup alternatives link
+  tags: config
+  alternatives: name=hadoop-conf link=/etc/hadoop/conf path={{ etc_folder }}/hadoop
+
+- name: install template configurations
+  tags: config
+  template: src={{ item }}.j2 dest={{ etc_folder }}/hadoop/{{ item }}
+  with_items:
+    - core-site.xml
+    - fair-scheduler.xml
+    - hdfs-site.xml
+    - mapred-site.xml
+    - yarn-site.xml
+    - hadoop-env.sh
+    - mapred-env.sh
+    - yarn-env.sh
+
+- name: install files configurations
+  tags: config
+  copy: src={{ item }} dest={{ etc_folder }}/hadoop/{{ item }}
+  with_items:
+    - capacity-scheduler.xml
+    - configuration.xsl
+    - container-executor.cfg
+    - dfs.exclude
+    - hadoop-metrics.properties
+    - hadoop-metrics2.properties
+    - hadoop-policy.xml
+    - log4j.properties
+
+- name: install default configurations
+  tags: config
+  copy: src=default/{{ item }} dest=/etc/default/{{ item }}
+  with_items:
+    - hadoop
+
+- name: create log folders
+  tags: config
+  file: path={{ log_folder }}/{{ item }} state=directory owner={{ item }} mode=0755
+  with_items:
+    - hdfs
+    - yarn
+    - mapred
+
+- name: install hdfs-ready utility
+  tags: config
+  template: src=bin/hdfs-ready.sh dest={{ etc_folder }}/hadoop/hdfs-ready.sh mode=0755

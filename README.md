@@ -101,11 +101,11 @@ Most of services should be available in a frame on the right. But Solr and some 
 which denies embedding them into an iframe. If a service opens a white page for you - try opening it in a new tab with middle mouse button.
 
 # Requirements
-[Ansible 1.9.4](http://www.ansible.com) is required. Please read [official documentation](http://docs.ansible.com/ansible/intro_installation.html#latest-release-via-yum) to install it. Please note that Ansible 2.0 has introduced incompatible and undocumented changes which is not supported by the playbook at the time being, so please strictly follow the provided (official) documentation links.
+[Ansible >= 2.2.0.0](http://www.ansible.com) is required. Please read [official documentation](http://docs.ansible.com/ansible/intro_installation.html#latest-release-via-yum) to install it. Please note that Ansible 2.0 has introduced incompatible and undocumented changes which is not supported by the playbook at the time being, so please strictly follow the provided (official) documentation links.
 
 OS version: Redhat/CentOS 6, 7
 
-Cloudera Hadoop version: 5.4 - 5.7
+Cloudera Hadoop version: 5.4 - 5.9
 
 The required for Cloudera Hadoop repositories have to be properly configured on the target hosts.
 See also [official documentation](http://www.cloudera.com/content/www/en-us/documentation/enterprise/latest/topics/cdh_ig_yumrepo_local_create.html)

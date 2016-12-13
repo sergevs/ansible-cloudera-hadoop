@@ -10,9 +10,13 @@ cluster_name: cluster
 log_folder: /var/log
 etc_folder: /etc/cluster
 
-# the ssh key to access other hosts without password under the root account
-# you have to generate it and put public key to the target hosts /root/.ssh/authorized_keys
-root_ssh_key: /root/.ssh/hadoop.key
+# the ssh key to access other hosts without password 
+# you have to generate it and put public key to the target hosts <effective user>/.ssh/authorized_keys
+#
+#clinit_ssh_key: /root/.ssh/hadoop.key
+
+# clinit effective user
+clinit_effective_user: root
 
 # the variable to control data destruction. non destructive plays not tested yet
 destroy_data: True

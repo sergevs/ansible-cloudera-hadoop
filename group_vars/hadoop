@@ -22,7 +22,7 @@ dfs_datanode_data_dir: 'file:///var/lib/hadoop-hdfs/cache/hdfs/dfs/data'
 dfs_journalnode_edits_dir: '/var/lib/hadoop-hdfs/cache/hdfs/dfs/journal'
 
 # default replication factor
-dfs_replication: 3
+dfs_replication: 1
 
 # umask for hdfs, the valued MUST be quoted
 fs_permissions_umask: '022'

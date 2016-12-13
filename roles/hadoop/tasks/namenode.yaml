@@ -3,7 +3,6 @@
   yum:  name=hadoop-hdfs-namenode state=latest
 
 - name: install namenode default configurations
-  tags: config
   template: src=default/{{ item }}.j2 dest=/etc/default/{{ item }}
   with_items:
     - hadoop-hdfs-namenode

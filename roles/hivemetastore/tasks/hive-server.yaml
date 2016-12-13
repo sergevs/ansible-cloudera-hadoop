@@ -1,0 +1,104 @@
+- name: install packages
+  tags: package
+  yum:  name={{ item }} state=latest
+  with_items:
+    - hive-metastore
+    - hive-server2
+    - postgresql{{ postgres_version|default('')|replace('.', '') }}
+    - postgresql{{ postgres_version|default('')|replace('.', '') }}-jdbc
+
+- name: create configuration directory
+  tags: config
+  file: path={{ etc_folder }}/hive state=directory
+
+- name: setup alternatives link
+  tags: config
+  alternatives: name=hive-conf link=/etc/hive/conf path={{ etc_folder }}/hive
+
+- name: set limits for hive user
+  tags: config
+  copy: src=hive.limits.conf dest=/etc/security/limits.d/hive.conf
+
+- name: install template configurations
+  tags: config
+  template: src={{ item }}.j2 dest={{ etc_folder }}/hive/{{ item }}
+  with_items:
+    - hive-site.xml
+    - hive-env.sh
+
+- name: install files configurations
+  tags: config
+  copy: src={{ item }} dest={{ etc_folder }}/hive/{{ item }}
+  with_items:
+    - hive-exec-log4j.properties
+    - hive-log4j.properties
+
+- name: install default configurations
+  tags: config
+  copy: src=default/{{ item }} dest=/etc/default/{{ item }}
+  with_items:
+    - hadoop-0.20-mapreduce
+    - hive-server2
+    - hive-metastore
+
+- name: copy hive-site.xml to hdfs
+  tags: config
+  command: sudo -u hdfs hdfs dfs {{ item }}
+  with_items:
+    - -mkdir -p /etc/hive/conf
+    - -copyFromLocal -f {{ etc_folder }}/hive/hive-site.xml /etc/hive/conf
+
+- name: create warehouse dir
+  tags: config
+  command: sudo -u hdfs hdfs dfs {{ item }}
+  with_items:
+    - -mkdir -p /user/hive/warehouse
+    - -chmod 1777 /user/hive
+    - -chmod 1777 /user/hive/warehouse
+
+- name:  setup hive log folders
+  tags: config
+  command: sed -i -e 's|^\(\s\+\)LOG_FILE=.*$|\1LOG_FILE={{ log_folder }}/hive/${DAEMON}.out|g' /etc/init.d/{{ item }}
+  with_items:
+    - hive-server2
+    - hive-metastore
+
+- name: create log folders
+  tags: config
+  file: path={{ log_folder }}/hive state=directory owner=hive mode=0755
+
+- name: create link to jdbc driver
+  tags: config
+  file: src=/usr/share/java/postgresql{{ postgres_version|default('')|replace('.', '') }}-jdbc.jar dest=/usr/lib/hive/lib/postgresql-jdbc.jar state=link force=yes
+
+- name: generate sql
+  tags: init
+  template: src="hive.sql.j2" dest=/tmp/ahive.sql
+
+- name: install .pgpass
+  template: src=".pgpass.j2" dest=/root/.pgpass mode=0600
+
+- name: create metastore database
+  tags: init
+  command: psql -h {{ groups['postgresql'][0] }} --username postgres -f /tmp/ahive.sql chdir=/usr/lib/hive/scripts/metastore/upgrade/postgres
+  when: destroy_data
+
+- name: remove sql and .pgpass files
+  command: rm -f /tmp/ahive.sql /root/.pgpass
+
+- name: add hive user to hadoop group
+  user: name=hive groups=hive,hadoop
+
+- name: start services
+  tags: service
+  service: name={{ item }} state=restarted enabled=yes
+  with_items:
+    - hive-metastore
+    - hive-server2
+
+- name: wait
+  command: sleep 7
+
+- name: test hive
+  tags: test
+  command: sudo -Hu hdfs beeline -u jdbc:hive2://{{ ansible_hostname }}:10000 -nhdfs -p password -d org.apache.hive.jdbc.HiveDriver -e 'create table ansible_test_table ( id int )  location "/tmp/ansible_test_table"; drop table ansible_test_table;'

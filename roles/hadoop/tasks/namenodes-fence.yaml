@@ -11,6 +11,11 @@
   local_action: command ssh-keygen -q -N "" -t rsa -b 2048  -f {{ inventory_dir }}/workdir/hdfs_key
   run_once: true
 
+- name: set key permissions
+  tags: config
+  local_action: file path={{ inventory_dir }}/workdir/hdfs_key mode=a+r
+  run_once: true
+
 - name: generate known_hosts
   tags: config
   local_action: shell ssh-keyscan {{ ansible_hostname }} >> {{ inventory_dir }}/workdir/hdfs_known_hosts

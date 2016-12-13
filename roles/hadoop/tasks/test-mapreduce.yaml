@@ -1,6 +1,6 @@
 - name: get resource manager ha state
   tags: test
-  command: sudo -Hu yarn  yarn rmadmin -getServiceState {{ ansible_hostname }}
+  command: sudo -Hu yarn yarn rmadmin -getServiceState {{ ansible_hostname }}
   register: ha_state
   when: groups['yarnresourcemanager']|count > 1
 
@@ -16,5 +16,5 @@
 
 - name: start services
   tags: test
-  service: name=hadoop-yarn-resourcemanager state=started enabled=yes
+  service: name=hadoop-yarn-resourcemanager state=restarted enabled=yes
   when: groups['yarnresourcemanager']|count > 1 and ha_state is defined and ha_state.stdout.find('active') != -1

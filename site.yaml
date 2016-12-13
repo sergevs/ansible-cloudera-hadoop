@@ -35,45 +35,44 @@
     - hadoop
   hosts: hadoop
   roles:
-    - hadoop
+    - { role: hadoop, deploy: 'base' }
 
 - name: Deploy journal nodes
   tags: journalnodes
   hosts: journalnodes
-  tasks:
-    - include: roles/hadoop/tasks/journalnode.yaml
+  roles:
+    - { role: hadoop, deploy: 'journalnodes' }
 
 - name: Deploy namenodes
   tags: namenodes
   hosts: namenodes
-  tasks:
-    - include: roles/hadoop/tasks/namenode.yaml
-    - include: roles/hadoop/tasks/namenodes-fence.yaml
-      when: groups['namenodes']|count > 1
+  roles:
+    - { role: hadoop, deploy: 'namenodes' }
+    - { role: hadoop, deploy: 'namenodes-fence' }
 
 - name: Deploy datanodes
   tags: datanodes
   hosts: datanodes
-  tasks:
-    - include: roles/hadoop/tasks/datanode.yaml
+  roles:
+    - { role: hadoop, deploy: 'datanodes' }
 
 - name: Test hdfs
   tags: test
   hosts: namenodes
-  tasks:
-    - include: roles/hadoop/tasks/test-hdfs.yaml
+  roles:
+    - { role: hadoop, deploy: 'test-hdfs' }
 
 - name: Deploy yarn resource manager and job history server
   tags: yarnresourcemanager
   hosts: yarnresourcemanager
-  tasks:
-    - include: roles/hadoop/tasks/resourcemanager.yaml
+  roles:
+    - { role: hadoop, deploy: 'resourcemanager' }
 
 - name: Test mapreduce
   tags: test
   hosts: yarnresourcemanager
-  tasks:
-    - include: roles/hadoop/tasks/test-mapreduce.yaml
+  roles:
+    - { role: hadoop, deploy: 'test-mapreduce' }
 
 - name: Deploy postgresql
   tags: postgresql
@@ -85,40 +84,37 @@
   tags: hivemetastore
   hosts: hivemetastore
   roles:
-    - hivemetastore
+    - { role: hivemetastore, deploy: 'hive-server' }
 
 - name: Deploy hive client on datanodes
   tags: hive
   hosts: datanodes
-  tasks:
-    - include: roles/hivemetastore/tasks/hive-client.yaml
-      when: groups['hivemetastore']|count == 1
+  roles:
+    - { role: hivemetastore, deploy: 'hive-client' }
 
 - name: Deploy impala state-store and catalog
   tags: impala
   hosts: impala-store-catalog
   roles:
-    - impala
+    - { role: impala, deploy: 'impala' }
 
 - name: Deploy impala daemon on datanodes
   tags: impala
   hosts: datanodes
-  tasks:
-    - include: roles/impala/tasks/impala-server.yaml
-      when: groups['impala-store-catalog']|count == 1
+  roles:
+    - { role: impala, deploy: 'impala-server' }
 
 - name: Deploy HBase
   tags: hbase
   hosts: hbasemaster
   roles:
-    - hbase
+    - { role: hbase, deploy: 'hbase-master' }
 
 - name: Deploy HBase regionservers on datanodes
   tags: hbase
   hosts: datanodes
-  tasks:
-    - include: roles/hbase/tasks/regionserver.yaml
-      when: groups['hbasemaster']|count == 1
+  roles:
+    - { role: hbase, deploy: 'regionserver' }
 
 - name: Deploy spark
   tags: spark

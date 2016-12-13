@@ -1,0 +1,50 @@
+- name: install packages
+  tags: packages
+  yum: name={{ item }} state=latest
+  with_items:
+    - hbase-master
+    - hbase-thrift
+    - hbase-rest
+
+- name: create configuration directory
+  file: path=/etc/hbase/conf.{{ cluster_name }} state=directory
+
+- name: setup alternatives link
+  alternatives: name=hbase-conf link=/etc/hbase/conf path=/etc/hbase/conf.{{ cluster_name }}
+
+- name: install default configurations
+  tags: config
+  copy: src=default/{{ item }} dest=/etc/default/{{ item }}
+  with_items:
+    - hbase
+
+- name: install template configurations
+  tags: config
+  template: src={{ item }}.j2 dest=/etc/hbase/conf/{{ item }}
+  with_items:
+    - hbase-site.xml
+    - regionservers
+
+- name: install files configurations
+  tags: config
+  copy: src={{ item }} dest=/etc/hbase/conf/{{ item }}
+  with_items:
+    - hadoop-metrics2-hbase.properties
+    - hbase-env.cmd
+    - hbase-env.sh
+    - hbase-policy.xml
+    - log4j.properties
+
+- name: create hdfs directories
+  command: sudo -Hu hdfs hdfs dfs {{ item }}
+  with_items:
+    - -mkdir -p /hbase
+    - -chown hbase /hbase
+
+- name: start services
+  tags: service
+  service: name={{ item }} state=restarted enabled=yes
+  with_items:
+    - hbase-master
+    - hbase-thrift
+    - hbase-rest

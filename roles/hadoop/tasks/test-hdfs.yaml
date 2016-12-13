@@ -19,5 +19,5 @@
 
 - name: start services
   tags: test
-  service: name=hadoop-hdfs-namenode state=started enabled=yes
+  service: name=hadoop-hdfs-namenode state=restarted enabled=yes
   when: groups['namenodes']|count > 1 and ha_state is defined and ha_state.stdout.find('active') != -1

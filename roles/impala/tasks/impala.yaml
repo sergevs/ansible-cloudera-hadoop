@@ -1,0 +1,43 @@
+- name: install packages
+  tags: packages
+  yum:  name={{ item }} state=latest
+  with_items:
+    - impala-state-store
+    - impala-catalog
+
+- name: create configuration directory
+  tags: config
+  file: path={{ etc_folder }}/impala state=directory
+
+- name: setup alternatives link
+  tags: config
+  alternatives: name=impala-conf link=/etc/impala/conf path={{ etc_folder }}/impala
+
+- name: install template configurations
+  tags: config
+  template: src={{ item }}.j2 dest=/etc/impala/conf/{{ item }}
+  with_items:
+    - hive-site.xml
+    - core-site.xml
+    - hdfs-site.xml
+
+- name: install template configuration for hive
+  tags: config
+  template: src=hive-site.xml.j2 dest=/etc/hive/conf/hive-site.xml
+
+- name: install default configurations
+  tags: config
+  template: src={{ item }}.j2 dest=/etc/default/{{ item }}
+  with_items:
+    - impala
+
+- name: create log folders
+  tags: config
+  file: path={{ log_folder }}/impala state=directory owner=impala mode=0755
+
+- name: start services
+  tags: service
+  service: name={{ item }} state=restarted enabled=yes
+  with_items:
+    - impala-state-store
+    - impala-catalog
