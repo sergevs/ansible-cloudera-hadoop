@@ -1,8 +1,8 @@
 # Ansible Playbook: cloudera-hadoop
 
-An ansible playbook to deploy cloudera hadoop components to the cluster
+An ansible playbook to deploy Cloudera hadoop components to the cluster
 # Overview
-The playbook is composed according to [official cloudera guides](http://www.cloudera.com/content/www/en-us/documentation/enterprise/5-4-x/topics/cdh_ig_command_line.html) with a primary purpose of production deployment in mind. High availability for **HDFS** and **Yarn** is implemented when sufficient number of resources(hosts) is configured. From the other side, all of the components can be also deployed on a single host.
+The playbook is composed according to [official cloudera guides](http://www.cloudera.com/content/www/en-us/documentation/enterprise/5-4-x/topics/cdh_ig_command_line.html) with a primary purpose of production deployment in mind. High availability for **HDFS** and **Yarn** is implemented when a sufficient number of resources(hosts) is configured. From the other side, all of the components can be also deployed on a single host.
 
 # Description
 #### The playbook is able to setup the required services for components:
@@ -21,12 +21,12 @@ The playbook is composed according to [official cloudera guides](http://www.clou
 
 The configuration is _very_ simple:
 
-It’s only required to place hostname(s) to the appropriate group in [hosts](hosts) file, and the required services will be setup.
+It’s only required to place hostname(s) to the appropriate group in the [hosts](hosts) file, and the required services will be setup.
 
 The playbook contain all configuration files in roles directories. If you need to add or change any parameter you can edit
 the required configuration file which can be found in roles/_service_/[files|templates] directory.
 
-The playbook run configuration check tasks at start, and will stop if the configuration is not supported,
+The playbook runs configuration check tasks at start, and will stop if the configuration is not supported,
 providing a descriptive error message.
 
 Besides of cluster( or single host ) setup, the playbook also generates cluster manager configuration file located at workdir/services.xml.
