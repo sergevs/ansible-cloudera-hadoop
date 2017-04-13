@@ -68,5 +68,5 @@ hue
 
 [java:children]
 hadoop
+kafka
 zookeepernodes
-

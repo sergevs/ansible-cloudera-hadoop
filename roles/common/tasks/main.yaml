@@ -4,6 +4,7 @@
   with_items:
     - "{{ java_package }}"
     - bigtop-utils
+    - redhat-lsb-core
 
 - name: install template configurations
   tags: config
