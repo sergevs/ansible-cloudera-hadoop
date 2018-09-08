@@ -108,7 +108,7 @@ OS version: Redhat/CentOS 6, 7
 Cloudera Hadoop version: 5.4 - 5.9
 
 The required for Cloudera Hadoop repositories have to be properly configured on the target hosts.
-See also [official documentation](http://www.cloudera.com/content/www/en-us/documentation/enterprise/latest/topics/cdh_ig_yumrepo_local_create.html)
+See also [official documentation](https://www.cloudera.com/documentation/enterprise/5-14-x/topics/cdh_ig_cdh5_install.html#concept_gp2_q32_24)
 
 Java package(s) have to be available in the repository. You can download [jdk-8u65-linux-x64.rpm](http://www.oracle.com/technetwork/java/javase/downloads/java-archive-javase8-2177648.html#jdk-8u60-oth-JPR) from official oracle site
 
